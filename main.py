@@ -38,14 +38,16 @@ def generate_response(prompt):
             }
         ]
     )
-    
+
     # Extract the text content from the response
     content = response.content
     text = ""
     for block in content:
-        if block.get("type") == "text":
+        if isinstance(block, dict) and block.get("type") == "text":
             text += block.get("text", "")
-    
+        elif isinstance(block, str):
+            text += block
+
     return text.strip()
 
 # Function to send email with transcript and generated story
