@@ -29,26 +29,20 @@ def generate_response(prompt):
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
+                "content": prompt
             }
         ]
     )
+    return response.completion.strip()
 
-    # Extract the text content from the response
-    content = response.content
-    text = ""
-    for block in content:
-        if isinstance(block, dict) and block.get("type") == "text":
-            text += block.get("text", "")
-        elif isinstance(block, str):
-            text += block
-
-    return text.strip()
+# Generate a new response if last message is not from assistant
+if st.session_state.messages[-1]["role"] != "assistant":
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            response_text = generate_response(prompt)
+            st.write(response_text)
+            message = {"role": "assistant", "content": response_text}
+            st.session_state.messages.append(message)
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
@@ -77,16 +71,18 @@ def interview():
             break
         transcript += f"You: {user_input}\n"
         prompt = f"{transcript}\nChatbot:"
-        response = generate_response(prompt)
+        response_content = generate_response(prompt)
+        response = response_content[0].text.strip()
         transcript += f"Chatbot: {response}\n"
         st.write(f"Chatbot: {response}")
 
-    story = generate_response(f"Based on the following interview transcript, write a compelling story about the interviewee:\n\n{transcript}")
-    st.write(f"\nGenerated Story:\n{story}")
+    story_prompt = f"Based on the following interview transcript, write a compelling story about the interviewee:\n\n{transcript}"
+    story_text = generate_response(story_prompt)
+    st.write(f"\nGenerated Story:\n{story_text}")
 
     recipient_email = st.text_input("Enter your email address to receive the transcript and story:")
     if st.button("Send Email"):
-        send_email(transcript, story, recipient_email)
+        send_email(transcript, story_text, recipient_email)
         st.write("Email sent successfully!")
 
 # Run the chatbot interview
