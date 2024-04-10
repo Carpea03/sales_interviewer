@@ -2,11 +2,20 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from anthropic import Anthropic
+import anthropic
 
 # Streamlit app title and description
 st.title("Chatbot Interviewer")
 st.write("This chatbot will interview you and generate a compelling story based on your responses.")
+
+# Anthropic API key (stored as a Streamlit secret)
+anthropic_api_key = st.secrets["ANTHROPIC_API_KEY"]
+
+# Email credentials (stored as Streamlit secrets)
+email_user = st.secrets["EMAIL_USER"]
+email_password = st.secrets["EMAIL_PASSWORD"]
+email_server = st.secrets["EMAIL_SERVER"]
+email_port = st.secrets["EMAIL_PORT"]
 
 # Initialize Anthropic client
 anthropic = Anthropic(api_key=anthropic_api_key)
