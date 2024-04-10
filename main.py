@@ -69,8 +69,10 @@ def send_email(transcript, story, recipient):
 def interview():
     st.write("Chatbot: Hello! I'm here to interview you. Let's start!")
     transcript = ""
+    message_count = 0
     while True:
-        user_input = st.text_input("You: ")
+        user_input = st.text_input("You: ", key=f"user_input_{message_count}")
+        message_count += 1
         if user_input.lower() in ["quit", "exit", "done"]:
             break
         transcript += f"You: {user_input}\n"
@@ -78,10 +80,10 @@ def interview():
         response = generate_response(prompt)
         transcript += f"Chatbot: {response}\n"
         st.write(f"Chatbot: {response}")
-    
+
     story = generate_response(f"Based on the following interview transcript, write a compelling story about the interviewee:\n\n{transcript}")
     st.write(f"\nGenerated Story:\n{story}")
-    
+
     recipient_email = st.text_input("Enter your email address to receive the transcript and story:")
     if st.button("Send Email"):
         send_email(transcript, story, recipient_email)
