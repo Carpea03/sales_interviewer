@@ -39,7 +39,7 @@ def generate_response(prompt):
             }
         ]
     )
-    return response.completion.strip()
+    return response.content[0].text.strip()
 
 # Generate a new response if last message is not from assistant
 if st.session_state.messages[-1]["role"] != "assistant":
