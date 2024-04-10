@@ -1,40 +1,37 @@
 import streamlit as st
-import openai
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from anthropic import Anthropic
 
 # Streamlit app title and description
 st.title("Chatbot Interviewer")
 st.write("This chatbot will interview you and generate a compelling story based on your responses.")
 
-# OpenAI API key (replace with your own)
-openai.api_key = "YOUR_API_KEY"
+# Initialize Anthropic client
+anthropic = Anthropic(api_key=anthropic_api_key)
 
-# Function to generate chatbot response using OpenAI API
+# Function to generate chatbot response using Anthropic API
 def generate_response(prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        max_tokens=100,
-        n=1,
-        stop=None,
-        temperature=0.7,
+    response = anthropic.completions.create(
+        prompt=f"{anthropic.HUMAN_PROMPT} {prompt} {anthropic.AI_PROMPT}",
+        max_tokens_to_sample=4000,
+        model="claude-3-opus-20240229",
     )
-    return response.choices[0].text.strip()
+    return response.completion.strip()
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
     msg = MIMEMultipart()
-    msg["From"] = "your_email@example.com"
+    msg["From"] = email_user
     msg["To"] = recipient
     msg["Subject"] = "Chatbot Interview Transcript and Story"
 
     msg.attach(MIMEText(f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"))
 
-    server = smtplib.SMTP("smtp.example.com", 587)
+    server = smtplib.SMTP(email_server, email_port)
     server.starttls()
-    server.login("your_email@example.com", "your_email_password")
+    server.login(email_user, email_password)
     server.send_message(msg)
     server.quit()
 
