@@ -29,11 +29,24 @@ def generate_response(prompt):
         messages=[
             {
                 "role": "user",
-                "content": prompt
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
             }
         ]
     )
-    return response.completion.strip()
+    
+    # Extract the text content from the response
+    content = response.content
+    text = ""
+    for block in content:
+        if block.get("type") == "text":
+            text += block.get("text", "")
+    
+    return text.strip()
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
@@ -41,9 +54,9 @@ def send_email(transcript, story, recipient):
     msg["From"] = email_user
     msg["To"] = recipient
     msg["Subject"] = "Chatbot Interview Transcript and Story"
-
+    
     msg.attach(MIMEText(f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"))
-
+    
     server = smtplib.SMTP(email_server, email_port)
     server.starttls()
     server.login(email_user, email_password)
@@ -63,10 +76,10 @@ def interview():
         response = generate_response(prompt)
         transcript += f"Chatbot: {response}\n"
         st.write(f"Chatbot: {response}")
-
+    
     story = generate_response(f"Based on the following interview transcript, write a compelling story about the interviewee:\n\n{transcript}")
     st.write(f"\nGenerated Story:\n{story}")
-
+    
     recipient_email = st.text_input("Enter your email address to receive the transcript and story:")
     if st.button("Send Email"):
         send_email(transcript, story, recipient_email)
