@@ -67,29 +67,42 @@ def send_email(transcript, story, recipient):
 
 # Chatbot interview loop
 def interview():
-    st.write("Chatbot: Hello! I'm here to interview you. Let's start!")
-    transcript = ""
-    message_count = 0
-    while True:
-        user_input = st.text_input("You: ", key=f"user_input_{message_count}")
-        message_count += 1
-        if user_input.lower() in ["quit", "exit", "done"]:
-            break
-        transcript += f"You: {user_input}\n"
-        prompt = f"{transcript}\nChatbot:"
-        response = generate_response(prompt)
-        transcript += f"Chatbot: {response}\n"
-        st.write(f"Chatbot: {response}")
+    # Initialize the conversation history if not already done
+    if "conversation_history" not in st.session_state:
+        st.session_state.conversation_history = []
+    
+    st.title("Chatbot Interviewer")
+    st.write("This chatbot will interview you and generate a compelling story based on your responses.")
+    
+    # Display previous conversation
+    for role, message in st.session_state.conversation_history:
+        if role == "user":
+            st.chat_message(message, is_user=True)
+        else:
+            st.chat_message(message, is_user=False)
+    
+    # User input
+    user_input = st.text_input("Your message:", key="user_input")
+    
+    if st.button("Send"):
+        # Append user input to conversation history
+        st.session_state.conversation_history.append(("user", user_input))
+        
+        # Generate response from the chatbot
+        prompt = "\n".join([msg for _, msg in st.session_state.conversation_history]) + "\nChatbot:"
+        chatbot_response = generate_response(prompt)  # Ensure generate_response is adjusted to use the Anthropic API
+        
+        # Append chatbot response to conversation history
+        st.session_state.conversation_history.append(("chatbot", chatbot_response))
+        
+        # Clear the input box after sending
+        st.session_state.user_input = ""
+        
+        # Display chatbot response
+        st.chat_message(chatbot_response, is_user=False)
 
-    story_prompt = f"Based on the following interview transcript, write a compelling story about the interviewee:\n\n{transcript}"
-    story_text = generate_response(story_prompt)
-    st.write(f"\nGenerated Story:\n{story_text}")
+    # Optional: Code to handle story generation and email sending goes here
 
-    recipient_email = st.text_input("Enter your email address to receive the transcript and story:")
-    if st.button("Send Email"):
-        send_email(transcript, story_text, recipient_email)
-        st.write("Email sent successfully!")
-
-# Run the chatbot interview
+# Ensure this function is called to run the chatbot
 if __name__ == "__main__":
     interview()
