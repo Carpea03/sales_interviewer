@@ -77,8 +77,7 @@ def interview():
             break
         transcript += f"You: {user_input}\n"
         prompt = f"{transcript}\nChatbot:"
-        response_content = generate_response(prompt)
-        response = response_content[0].text.strip()
+        response = generate_response(prompt)
         transcript += f"Chatbot: {response}\n"
         st.write(f"Chatbot: {response}")
 
