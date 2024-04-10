@@ -20,6 +20,12 @@ email_port = st.secrets["EMAIL_PORT"]
 # Initialize Anthropic client
 client = anthropic.Anthropic(api_key=anthropic_api_key)
 
+# Initialize session state with an initial message
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hello! I'm here to interview you. Let's start!"}
+    ]
+
 # Function to generate chatbot response using Anthropic API
 def generate_response(prompt):
     response = client.messages.create(
