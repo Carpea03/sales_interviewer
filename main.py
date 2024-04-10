@@ -29,16 +29,11 @@ def generate_response(prompt):
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
+                "content": prompt
             }
         ]
     )
-    return response.messages[0].content[0].text.strip()
+    return response.completion.strip()
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
