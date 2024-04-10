@@ -18,16 +18,22 @@ email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
 # Initialize Anthropic client
-anthropic = Anthropic(api_key=anthropic_api_key)
+client = anthropic.Anthropic
 
 # Function to generate chatbot response using Anthropic API
 def generate_response(prompt):
-    response = anthropic.completions.create(
-        prompt=f"{anthropic.HUMAN_PROMPT} {prompt} {anthropic.AI_PROMPT}",
-        max_tokens_to_sample=4000,
+    response = client.messages.create(
         model="claude-3-opus-20240229",
+        max_tokens=1000,
+        temperature=0,
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
     )
-    return response.completion.strip()
+    return response.messages[0].content.strip()
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
