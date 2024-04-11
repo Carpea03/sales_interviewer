@@ -16,6 +16,24 @@ email_password = st.secrets["EMAIL_PASSWORD"]
 email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
+# Validate model name
+assert isinstance(anthropic_api_key, str), "API key must be a string"
+assert isinstance(email_user, str), "Email user must be a string"
+# ...continue for other parameters...
+
+# Validate messages structure
+assert isinstance(st.session_state.messages, list), "Messages must be a list"
+for message in st.session_state.messages:
+    assert "role" in message and "content" in message, "Each message must contain 'role' and 'content'"
+    assert message["role"] in ["user", "assistant"], "Invalid role in message"
+    # Validate message content as needed...
+
+# Validate max_tokens
+assert isinstance(max_tokens, int) and max_tokens > 0, "max_tokens must be a positive integer"
+
+# Validate temperature
+assert 0.0 <= temperature <= 1.0, "Temperature must be between 0.0 and 1.0"
+
 # Initialize Anthropic client
 client = Anthropic(api_key=anthropic_api_key)
 
