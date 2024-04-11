@@ -2,7 +2,7 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import anthropic
+from anthropic import Anthropic
 
 st.title("Chatbot Interviewer")
 st.write("This chatbot will interview you and generate a compelling story based on your responses.")
@@ -17,7 +17,7 @@ email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
 # Initialize Anthropic client
-client = anthropic.Anthropic(api_key=anthropic_api_key)
+client = Anthropic(api_key=anthropic_api_key)
 
 # Initialize session state with an initial message
 if "messages" not in st.session_state:
@@ -39,15 +39,27 @@ if prompt := st.chat_input("What would you like to share?"):
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # Generate response from the chatbot
-    chatbot_response = generate_response(prompt)
-
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
-        st.markdown(chatbot_response)
+        # Stream the response from Anthropic API
+        stream = client.messages.stream(
+            model="claude-3-opus-20240229",
+            messages=[
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ],
+            max_tokens=1000,
+            temperature=1,
+        )
+
+        # Display the streamed response
+        response_text = ""
+        for data in stream:
+            response_text += data.content
+            st.markdown(response_text)
 
     # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": chatbot_response})
+    st.session_state.messages.append({"role": "assistant", "content": response_text})
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
