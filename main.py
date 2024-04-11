@@ -28,7 +28,7 @@ if "conversation_history" not in st.session_state:
         {"role": "user", "content": "Hello! I'm here to be interviewed. Please ask me some questions."},
         {"role": "assistant", "content": "a message that is useful"}
     ]
-
+st.write("boo")
 # Display chat messages from history on app rerun
 for message in st.session_state.conversation_history[1:]:
     with st.chat_message(message["role"]):
