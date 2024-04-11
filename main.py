@@ -42,21 +42,18 @@ if prompt := st.chat_input("What would you like to share?"):
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
         # Stream the response from Anthropic API
-        stream = client.messages.stream(
+        with client.messages.stream(
             model="claude-3-opus-20240229",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
             max_tokens=1000,
             temperature=1,
-        )
+            messages=st.session_state.messages,
+        ) as stream:
+            # Correctly access and iterate over the streamed text
+            response_text = ""
+            for text in stream.text_stream:  # Corrected line
+                response_text += text
+                st.markdown(response_text)
 
-        # Display the streamed response
-        response_text = ""
-        for data in stream:
-            response_text += data.content
-            st.markdown(response_text)
 
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response_text})
