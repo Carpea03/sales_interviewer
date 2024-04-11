@@ -57,6 +57,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
                 response_text += text
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
+        st.stop()
 
     # Add assistant response to conversation history
     st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
