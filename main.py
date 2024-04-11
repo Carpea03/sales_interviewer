@@ -22,6 +22,12 @@ assert isinstance(email_user, str), "Email user must be a string"
 # Initialize Anthropic client
 client = Anthropic(api_key=anthropic_api_key)
 
+# Initialize 'conversation_history' in session_state if it doesn't exist
+if "conversation_history" not in st.session_state:
+    st.session_state.conversation_history = [
+        {"role": "user", "content": "Hello! I'm here to be interviewed. Please ask me some questions."}
+    ]
+
 # Display chat messages from history on app rerun
 for message in st.session_state.conversation_history:
     with st.chat_message(message["role"]):
