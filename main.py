@@ -33,6 +33,16 @@ for message in st.session_state.conversation_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# Accept user input
+prompt = st.chat_input("What would you like to share?",disabled=st.session_state.conversation_history[-1]["role"] == "user")
+if prompt:
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Add user message to conversation history
+    st.session_state.conversation_history.append({"role": "user", "content": prompt})
+
     # Generate assistant response only if the last message in the conversation history is from the user
 if st.session_state.conversation_history[-1]["role"] == "user":
     response_text = ""
@@ -54,16 +64,8 @@ if st.session_state.conversation_history[-1]["role"] == "user":
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(response_text)
-
-prompt = st.chat_input("What would you like to share?",disabled=st.session_state.conversation_history[-1]["role"] == "user")
-if prompt:
-    # Display user message in chat message container
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Add user message to conversation history
-    st.session_state.conversation_history.append({"role": "user", "content": prompt})
-
+    st.rerun()
+    
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
     msg = MIMEMultipart()
