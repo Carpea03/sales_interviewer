@@ -24,7 +24,10 @@ client = Anthropic(api_key=anthropic_api_key)
 
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
-    st.session_state.conversation_history = []
+    st.session_state.conversation_history = [
+        {"role": "user", "content": "Hello! I'm here to be interviewed."},
+        {"role": "assistant", "content": "Great! I'm ready to ask you some questions. Let's start with the interview."}
+    ]
 
 # Display chat messages from history on app rerun
 for message in st.session_state.conversation_history:
@@ -49,10 +52,7 @@ if prompt := st.chat_input("What would you like to share?"):
                 model="claude-3-opus-20240229",
                 max_tokens=1000,
                 temperature=1,
-                messages=[
-                    {"role": "user", "content": "Hello! I'm here to be interviewed. Can you ask me some questions?"},
-                    {"role": "user", "content": prompt}
-                ],
+                messages=st.session_state.conversation_history,
             ) as stream:
                 for text in stream.text_stream:
                     response_text += text
