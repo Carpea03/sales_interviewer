@@ -25,7 +25,7 @@ client = Anthropic(api_key=anthropic_api_key)
 # Initialize 'messages' in session_state if it doesn't exist
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "assistant", "content": "Hello! I'm here to interview you. Let's start!"}
+        {"role": "user", "content": "Hello! I'm here to be interviewed."}
     ]
 
 # Display chat messages from history on app rerun
