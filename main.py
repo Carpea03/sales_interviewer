@@ -43,26 +43,27 @@ if prompt:
     # Add user message to conversation history
     st.session_state.conversation_history.append({"role": "user", "content": prompt})
 
-    # Generate assistant response
-    response_text = ""
-    try:
-        with client.messages.stream(
-            model="claude-3-opus-20240229",
-            max_tokens=1000,
-            temperature=1,
-            messages=st.session_state.conversation_history,
-        ) as stream:
-            for text in stream.text_stream:
-                response_text += text
-    except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
+    # Generate assistant response only if the last message in the conversation history is from the user
+    if st.session_state.conversation_history[-1]["role"] == "user":
+        response_text = ""
+        try:
+            with client.messages.stream(
+                model="claude-3-opus-20240229",
+                max_tokens=1000,
+                temperature=1,
+                messages=st.session_state.conversation_history,
+            ) as stream:
+                for text in stream.text_stream:
+                    response_text += text
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
 
-    # Add assistant response to conversation history
-    st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+        # Add assistant response to conversation history
+        st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
 
-    # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        st.markdown(response_text)
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(response_text)
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
