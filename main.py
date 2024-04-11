@@ -4,6 +4,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
 
+# Initialize 'messages' in session_state if it doesn't exist
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+
+# Now that 'messages' is guaranteed to exist, you can safely perform the assertion
+assert isinstance(st.session_state.messages, list), "Messages must be a list"
+
 st.title("Chatbot Interviewer")
 st.write("This chatbot will interview you and generate a compelling story based on your responses.")
 
