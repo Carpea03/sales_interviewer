@@ -45,7 +45,7 @@ if prompt := st.chat_input("What would you like to share?"):
         # Stream the response from Anthropic API
         response_text = ""
         try:
-            for data in client.messages.stream(
+            with client.messages.stream(
                 model="claude-3-opus-20240229",
                 max_tokens=1000,
                 temperature=1,
@@ -53,9 +53,10 @@ if prompt := st.chat_input("What would you like to share?"):
                     {"role": "user", "content": "Hello! I'm here to be interviewed. Can you ask me some questions?"},
                     {"role": "user", "content": prompt}
                 ],
-            ):
-                response_text += data.content[0].text
-                st.markdown(response_text)
+            ) as stream:
+                for text in stream.text_stream:
+                    response_text += text
+                    st.markdown(response_text)
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
