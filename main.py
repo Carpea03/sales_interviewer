@@ -34,7 +34,7 @@ for message in st.session_state.conversation_history:
         st.markdown(message["content"])
 
 # Accept user input
-prompt = st.chat_input("What would you like to share?",disable=st.session_state.conversation_history[-1]["role"] == "user")
+prompt = st.chat_input("What would you like to share?",disabled=st.session_state.conversation_history[-1]["role"] == "user")
 if prompt:
     # Display user message in chat message container
     with st.chat_message("user"):
