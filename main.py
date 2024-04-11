@@ -4,29 +4,25 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
 
-# Initialize 'messages' in session_state if it doesn't exist
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
-
-# Now that 'messages' is guaranteed to exist, you can safely perform the assertion
-assert isinstance(st.session_state.messages, list), "Messages must be a list"
-
 st.title("Chatbot Interviewer")
 st.write("This chatbot will interview you and generate a compelling story based on your responses.")
 
-# Anthropic API key (stored as a Streamlit secret)
+# Anthropic API key and email credentials (stored as Streamlit secrets)
 anthropic_api_key = st.secrets["ANTHROPIC_API_KEY"]
-
-# Email credentials (stored as Streamlit secrets)
 email_user = st.secrets["EMAIL_USER"]
 email_password = st.secrets["EMAIL_PASSWORD"]
 email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
+# Validate static values immediately after they're defined
+assert isinstance(anthropic_api_key, str), "API key must be a string"
+assert isinstance(email_user, str), "Email user must be a string"
+# Assertions for email_password, email_server, and email_port could be added here as needed
+
 # Initialize Anthropic client
 client = Anthropic(api_key=anthropic_api_key)
 
-# Initialize session state with an initial message
+# Initialize 'messages' in session_state if it doesn't exist
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "assistant", "content": "Hello! I'm here to interview you. Let's start!"}
@@ -57,30 +53,12 @@ if prompt := st.chat_input("What would you like to share?"):
         ) as stream:
             # Correctly access and iterate over the streamed text
             response_text = ""
-            for text in stream.text_stream:  # Corrected line
+            for text in stream.text_stream:
                 response_text += text
                 st.markdown(response_text)
 
     # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": response_text})
-
-    # Validate model name
-    assert isinstance(anthropic_api_key, str), "API key must be a string"
-    assert isinstance(email_user, str), "Email user must be a string"
-    # ...continue for other parameters...
-
-    # Validate messages structure
-    assert isinstance(st.session_state.messages, list), "Messages must be a list"
-    for message in st.session_state.messages:
-        assert "role" in message and "content" in message, "Each message must contain 'role' and 'content'"
-        assert message["role"] in ["user", "assistant"], "Invalid role in message"
-        # Validate message content as needed...
-
-    # Validate max_tokens
-    assert isinstance(max_tokens, int) and max_tokens > 0, "max_tokens must be a positive integer"
-
-    # Validate temperature
-    assert 0.0 <= temperature <= 1.0, "Temperature must be between 0.0 and 1.0"
+    st.session_state.messages.append({"role": "assistant", "content": response_text})
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
