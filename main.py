@@ -25,8 +25,7 @@ client = Anthropic(api_key=anthropic_api_key)
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = [
-        {"role": "user", "content": "Hello! I'm here to be interviewed."},
-        {"role": "assistant", "content": "Great! I'm ready to ask you some questions. Let's start with the interview."}
+        {"role": "assistant", "content": "Hello! I'm here to interview you. Please share something about yourself to get started."}
     ]
 
 # Display chat messages from history on app rerun
@@ -35,7 +34,8 @@ for message in st.session_state.conversation_history:
         st.markdown(message["content"])
 
 # Accept user input
-if prompt := st.chat_input("What would you like to share?"):
+prompt = st.chat_input("What would you like to share?")
+if prompt:
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -43,25 +43,26 @@ if prompt := st.chat_input("What would you like to share?"):
     # Add user message to conversation history
     st.session_state.conversation_history.append({"role": "user", "content": prompt})
 
-    # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        # Stream the response from Anthropic API
-        response_text = ""
-        try:
-            with client.messages.stream(
-                model="claude-3-opus-20240229",
-                max_tokens=1000,
-                temperature=1,
-                messages=st.session_state.conversation_history,
-            ) as stream:
-                for text in stream.text_stream:
-                    response_text += text
-                    st.markdown(response_text)
-        except Exception as e:
-            st.error(f"An error occurred: {str(e)}")
+    # Generate assistant response
+    response_text = ""
+    try:
+        with client.messages.stream(
+            model="claude-3-opus-20240229",
+            max_tokens=1000,
+            temperature=1,
+            messages=st.session_state.conversation_history,
+        ) as stream:
+            for text in stream.text_stream:
+                response_text += text
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
 
     # Add assistant response to conversation history
     st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+
+    # Display assistant response in chat message container
+    with st.chat_message("assistant"):
+        st.markdown(response_text)
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
