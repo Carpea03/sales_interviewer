@@ -22,14 +22,14 @@ assert isinstance(email_user, str), "Email user must be a string"
 # Initialize Anthropic client
 client = Anthropic(api_key=anthropic_api_key)
 
-# Initialize 'messages' in session_state if it doesn't exist
-if "messages" not in st.session_state:
-    st.session_state.messages = [
+# Initialize 'conversation_history' in session_state if it doesn't exist
+if "conversation_history" not in st.session_state:
+    st.session_state.conversation_history = [
         {"role": "user", "content": "Hello! I'm here to be interviewed."}
     ]
 
 # Display chat messages from history on app rerun
-for message in st.session_state.messages:
+for message in st.session_state.conversation_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
@@ -39,8 +39,8 @@ if prompt := st.chat_input("What would you like to share?"):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # Add user message to conversation history
+    st.session_state.conversation_history.append({"role": "user", "content": prompt})
 
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
@@ -51,15 +51,15 @@ if prompt := st.chat_input("What would you like to share?"):
                 model="claude-3-opus-20240229",
                 max_tokens=1000,
                 temperature=1,
-                messages=st.session_state.messages,
+                messages=st.session_state.conversation_history,
             ):
                 response_text += data.content[0].text
                 st.markdown(response_text)
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response_text})
+    # Add assistant response to conversation history
+    st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
