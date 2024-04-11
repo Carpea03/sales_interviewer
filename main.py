@@ -46,6 +46,7 @@ if prompt:
     # Generate assistant response only if the last message in the conversation history is from the user
     if st.session_state.conversation_history[-1]["role"] == "user":
         response_text = ""
+        st.write(st.session_state.conversation_history)
         try:
             with client.messages.stream(
                 model="claude-3-opus-20240229",
