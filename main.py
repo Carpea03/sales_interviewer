@@ -25,7 +25,7 @@ client = Anthropic(api_key=anthropic_api_key)
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = [
-        {"role": "user", "content": "Hello! I'm here to be interviewed. Please ask me some questions."}
+        {"role": "assistant", "content": "Hello! I'm here to be interviewed. Please ask me some questions."}
     ]
 
 # Display chat messages from history on app rerun
@@ -65,7 +65,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
     with st.chat_message("assistant"):
         st.markdown(response_text)
     st.rerun()
-    
+
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
     msg = MIMEMultipart()
