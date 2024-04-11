@@ -4,7 +4,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import anthropic
 
-# Streamlit app title and description
 st.title("Chatbot Interviewer")
 st.write("This chatbot will interview you and generate a compelling story based on your responses.")
 
@@ -26,29 +25,38 @@ if "messages" not in st.session_state:
         {"role": "assistant", "content": "Hello! I'm here to interview you. Let's start!"}
     ]
 
-# Function to generate chatbot response using Anthropic API
-def generate_response(prompt):
-    response = client.messages.create(
-        model="claude-3-opus-20240229",
-        max_tokens=4000,
-        temperature=1,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
-    return response.messages[-1]["content"][0]["text"].strip()
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-# Generate a new response if last message is not from assistant
-if st.session_state.messages[-1]["role"] != "assistant":
+# Accept user input
+if prompt := st.chat_input("What would you like to share?"):
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    # Display assistant response in chat message container
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            response_text = generate_response(prompt)
-            st.write(response_text)
-            message = {"role": "assistant", "content": response_text}
-            st.session_state.messages.append(message)
+        # Stream the response from Anthropic API
+        stream = client.messages.stream(
+            model="claude-3-opus-20240229",
+            messages=[
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ],
+            max_tokens=4000,
+            temperature=1,
+        )
+
+        # Display the streamed response
+        response = st.write_stream(stream)
+
+    # Add assistant response to chat history
+    st.session_state.messages.append({"role": "assistant", "content": response})
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
