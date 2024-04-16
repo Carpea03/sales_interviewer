@@ -4,6 +4,26 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
 
+# Function to send email with transcript and generated story
+def send_email(transcript, story, recipient):
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = email_user
+        msg["To"] = recipient
+        msg["Subject"] = "Chatbot Interview Transcript and Story"
+        msg.attach(
+            MIMEText(
+                f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"
+            )
+        )
+        server = smtplib.SMTP(email_server, email_port)
+        server.starttls()
+        server.login(email_user, email_password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        st.error(f"An error occurred while sending the email: {str(e)}")
+
 st.title("Chatbot Interviewer")
 st.write(
     "This chatbot will interview you and generate a compelling story based on your responses."
@@ -149,25 +169,5 @@ talents within the Guild of Entrepreneurs community.
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
         st.stop()
-
-# Function to send email with transcript and generated story
-def send_email(transcript, story, recipient):
-    try:
-        msg = MIMEMultipart()
-        msg["From"] = email_user
-        msg["To"] = recipient
-        msg["Subject"] = "Chatbot Interview Transcript and Story"
-        msg.attach(
-            MIMEText(
-                f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"
-            )
-        )
-        server = smtplib.SMTP(email_server, email_port)
-        server.starttls()
-        server.login(email_user, email_password)
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        st.error(f"An error occurred while sending the email: {str(e)}")
 
 st.rerun()
