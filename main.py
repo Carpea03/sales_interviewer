@@ -152,5 +152,3 @@ if prompt:
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
             st.stop()
-
-st.rerun()
