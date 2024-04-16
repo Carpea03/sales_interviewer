@@ -25,7 +25,7 @@ client = Anthropic(api_key=anthropic_api_key)
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = [
-        {"role": "system", "content": """
+        {"role": "user", "content": """
 You are an AI interviewer for the Guild of Entrepreneurs community. Your task is to engage in a
 conversation with a new member to learn more about their background, business, and aspirations. The
 goal is to gather information that will help you craft a compelling article introducing the member
