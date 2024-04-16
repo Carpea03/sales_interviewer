@@ -98,7 +98,7 @@ that introduces the member to the Guild of Entrepreneurs community. Include the 
 
 Remember, the final article should facilitate meaningful connections and showcase the diverse
 talents within the Guild of Entrepreneurs community.
-"""
+""",
             messages=st.session_state.conversation_history,
         ) as stream:
             for text in stream.text_stream:
