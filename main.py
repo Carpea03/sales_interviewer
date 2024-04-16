@@ -166,7 +166,7 @@ talents within the Guild of Entrepreneurs community.
             "The interview is completed, and the article has been sent via email."
         )
 
-    except Exception as e:
+        except Exception as e:
         st.error(f"An error occurred: {str(e)}")
         st.stop()
 
