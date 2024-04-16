@@ -1,6 +1,4 @@
 import streamlit as st
-import sys
-import subprocess
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -19,9 +17,9 @@ def send_email(transcript, story, recipient):
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
 
-st.title("Chatbot Interviewer")
+st.title("Guild Reporter")
 st.write(
-    "This chatbot will interview you and generate a compelling story based on your responses."
+    "This chatbot will interview you and generate a story based on your responses."
 )
 
 # Anthropic API key and email credentials (stored as Streamlit secrets)
@@ -144,7 +142,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
 
         # Send the email with the transcript and article
         email_sender = st.secrets["EMAIL_USER"]
-        email_receiver = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
+        email_receiver = "alexcarpenter2000@gmail.com","kusumadjajalevina@gmail.com"  # Replace with the actual recipient email address
         subject = "Chatbot Interview Transcript and Story"
         body = f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{article}"
         password = st.secrets["EMAIL_PASSWORD"]
