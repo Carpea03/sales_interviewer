@@ -1,7 +1,12 @@
 import streamlit as st
-import yagmail
+import sys
+   import subprocess
+
+   def install(package):
+       subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+   install('yagmail')
 import smtplib
-import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
