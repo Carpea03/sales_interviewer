@@ -1,4 +1,5 @@
 import streamlit as st
+import yagmail
 import smtplib
 import time
 from email.mime.text import MIMEText
@@ -7,32 +8,16 @@ from anthropic import Anthropic
 import tornado.websocket
 
 # Function to send email with transcript and generated story
-def send_email(transcript, story, recipient, max_retries=3, retry_delay=5):
-    retries = 0
-    while retries < max_retries:
-        try:
-            msg = MIMEMultipart()
-            msg["From"] = email_user
-            msg["To"] = recipient
-            msg["Subject"] = "Chatbot Interview Transcript and Story"
-            msg.attach(MIMEText(f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"))
-
-            with smtplib.SMTP(email_server, email_port) as server:
-                server.starttls()
-                server.login(email_user, email_password)
-                server.send_message(msg)
-
-            return True
-        except smtplib.SMTPException as e:
-            st.warning(f"An error occurred while sending the email: {str(e)}. Retrying in {retry_delay} seconds...")
-            retries += 1
-            time.sleep(retry_delay)
-        except Exception as e:
-            st.error(f"An unexpected error occurred while sending the email: {str(e)}")
-            return False
-
-    st.error(f"Failed to send the email after {max_retries} retries.")
-    return False
+def send_email(transcript, story, recipient):
+    try:
+        yag = yagmail.SMTP(email_user, email_password)
+        subject = "Chatbot Interview Transcript and Story"
+        content = f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"
+        yag.send(to=recipient, subject=subject, contents=content)
+        return True
+    except Exception as e:
+        st.error(f"An error occurred while sending the email: {str(e)}")
+        return False
 
 st.title("Chatbot Interviewer")
 st.write(
