@@ -135,36 +135,36 @@ talents within the Guild of Entrepreneurs community.
         st.stop()
 
         # Add assistant response to conversation history
-        st.session_state.conversation_history.append(
-            {"role": "assistant", "content": response_text}
+    st.session_state.conversation_history.append(
+        {"role": "assistant", "content": response_text}
+    )
+
+    # Display assistant response in chat message container
+    with st.chat_message("assistant"):
+        st.markdown(response_text)
+
+    # Extract the article from the response
+    if "<article>" in response_text:
+        article_start = response_text.index("<article>") + len("<article>")
+        article_end = response_text.index("</article>")
+        article = response_text[article_start:article_end].strip()
+
+        # Generate the interview transcript
+        transcript = "\n".join(
+            [
+                f"{message['role']}: {message['content']}"
+                for message in st.session_state.conversation_history
+            ]
         )
 
-        # Display assistant response in chat message container
-        with st.chat_message("assistant"):
-            st.markdown(response_text)
+        # Send the email with the transcript and article
+        recipient = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
+        send_email(transcript, article, recipient)
 
-        # Extract the article from the response
-        if "<article>" in response_text:
-            article_start = response_text.index("<article>") + len("<article>")
-            article_end = response_text.index("</article>")
-            article = response_text[article_start:article_end].strip()
-
-            # Generate the interview transcript
-            transcript = "\n".join(
-                [
-                    f"{message['role']}: {message['content']}"
-                    for message in st.session_state.conversation_history
-                ]
-            )
-
-            # Send the email with the transcript and article
-            recipient = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
-            send_email(transcript, article, recipient)
-
-            # Display a success message
-            st.success(
-                "The interview is completed, and the article has been sent via email."
-            )
+        # Display a success message
+        st.success(
+            "The interview is completed, and the article has been sent via email."
+        )
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
