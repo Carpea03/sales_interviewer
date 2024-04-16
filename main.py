@@ -160,7 +160,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
             server.send_message(msg)
             server.quit()
 
-            st.success('Email sent successfully! 🚀')
+            st.success('Thank you so much for taking the time to have a conversation with the Guild Reporter! Your story has been sent to our human editors and we will be in touch with the next steps soon! 🚀')
         except Exception as e:
             st.error(f"An error occurred while sending the email: {e}")
 
