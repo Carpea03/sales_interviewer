@@ -21,28 +21,6 @@ assert isinstance(anthropic_api_key, str), "API key must be a string"
 assert isinstance(email_user, str), "Email user must be a string"
 # Assertions for email_password, email_server, and email_port could be added here as needed
 
-
-# Function to send email with transcript and generated story
-def send_email(transcript, story, recipient):
-    try:
-        msg = MIMEMultipart()
-        msg["From"] = email_user
-        msg["To"] = recipient
-        msg["Subject"] = "Chatbot Interview Transcript and Story"
-        msg.attach(
-            MIMEText(
-                f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"
-            )
-        )
-        server = smtplib.SMTP(email_server, email_port)
-        server.starttls()
-        server.login(email_user, email_password)
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        st.error(f"An error occurred while sending the email: {str(e)}")
-
-
 # Initialize Anthropic client
 client = Anthropic(api_key=anthropic_api_key)
 
@@ -171,5 +149,25 @@ talents within the Guild of Entrepreneurs community.
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
         st.stop()
+
+# Function to send email with transcript and generated story
+def send_email(transcript, story, recipient):
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = email_user
+        msg["To"] = recipient
+        msg["Subject"] = "Chatbot Interview Transcript and Story"
+        msg.attach(
+            MIMEText(
+                f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"
+            )
+        )
+        server = smtplib.SMTP(email_server, email_port)
+        server.starttls()
+        server.login(email_user, email_password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        st.error(f"An error occurred while sending the email: {str(e)}")
 
 st.rerun()
