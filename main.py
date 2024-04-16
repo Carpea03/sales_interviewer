@@ -142,7 +142,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
 
         # Send the email with the transcript and article
         email_sender = st.secrets["EMAIL_USER"]
-        email_receiver = "alexcarpenter2000@gmail.com","kusumadjajalevina@gmail.com"  # Replace with the actual recipient email address
+        email_receiver = "alexcarpenter2000@gmail.com,kusumadjajalevina@gmail.com"  # Replace with the actual recipient email address
         subject = "Chatbot Interview Transcript and Story"
         body = f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{article}"
         password = st.secrets["EMAIL_PASSWORD"]
