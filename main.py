@@ -123,12 +123,16 @@ if prompt:
             ) as stream:
                 for text in stream.text_stream:
                     response_text += text
-                    # Add assistant response to conversation history
+    # Add assistant response to conversation history
             st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
 
             # Display assistant response in chat message container
-            with st.chat_message("assistant"):
-                st.markdown(response_text)
+            try:
+                with st.chat_message("assistant"):
+                    st.markdown(response_text)
+            except tornado.websocket.WebSocketClosedError:
+                st.warning("The connection was closed unexpectedly. Please refresh the page and try again.")
+                st.stop()
 
             # Extract the article from the response
             if "<article>" in response_text:
@@ -150,6 +154,8 @@ if prompt:
                     st.error(f"An error occurred while sending the email: {str(e)}")
                 except Exception as e:
                     st.error(f"An unexpected error occurred while sending the email: {str(e)}")
+
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
             st.stop()
+
