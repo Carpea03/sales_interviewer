@@ -69,100 +69,104 @@ if prompt:
 
     # Generate assistant response only if the last message in the conversation history is from the user
 if st.session_state.conversation_history[-1]["role"] == "user":
-        response_text = ""
-        try:
-            with client.messages.stream(
-                model="claude-3-opus-20240229",
-                max_tokens=4096,
-                temperature=1,
-                system="""
-                You are an AI interviewer for the Guild of Entrepreneurs community. Your task is to engage in a
-                conversation with a new member to learn more about their background, business, and aspirations. The
-                goal is to gather information that will help you craft a compelling article introducing the member
-                to the community.
-                Conduct the interview by following these steps:
-                1. Maintain a friendly, curious, and engaging tone throughout the conversation to create a
-                comfortable and open environment.
-                2. Ask one question at a time, covering the 10 key topics outlined below. Wait for the member's
-                response before moving on to the next question.
-                - Personal background
-                - Business overview
-                - Expertise and skills
-                - Learning goals
-                - Target customers
-                - Challenges and successes
-                - Community involvement
-                - Hobbies and interests
-                - Collaboration opportunities
-                - Future vision
-                3. Use follow-up questions as needed to gather more details, specific examples, and deeper insights
-                related to each topic.
-                4. After completing the interview, take a moment to reflect on the conversation and organize your
-                thoughts in a <scratchpad>. Consider:
-                - Key takeaways and unique aspects of the member's story
-                - How their background and experiences have shaped their entrepreneurial journey
-                - The value they bring to the Guild of Entrepreneurs community
-                - Potential connections or collaboration opportunities with other members
-                5. Using the information gathered and your reflections, craft a well-structured and engaging article
-                that introduces the member to the Guild of Entrepreneurs community. Include the article inside
-                <article> tags.
-                - Open with a compelling hook that captures the essence of the member's story
-                - Provide an overview of their background, business, and aspirations
-                - Highlight their unique skills, experiences, and perspective
-                - Discuss their goals and how they hope to contribute to and benefit from the community
-                - Conclude with a forward-looking statement about their potential impact and future plans
-                Remember, the final article should facilitate meaningful connections and showcase the diverse
-                talents within the Guild of Entrepreneurs community.
-                """,
-                messages=st.session_state.conversation_history,
-            ) as stream:
-                for text in stream.text_stream:
-                    response_text += text
+    response_text = ""
+    try:
+        with client.messages.stream(
+            model="claude-3-opus-20240229",
+            max_tokens=4096,
+            temperature=1,
+            system="""
+            You are an AI interviewer for the Guild of Entrepreneurs community. Your task is to engage in a
+            conversation with a new member to learn more about their background, business, and aspirations. The
+            goal is to gather information that will help you craft a compelling article introducing the member
+            to the community.
+            Conduct the interview by following these steps:
+            1. Maintain a friendly, curious, and engaging tone throughout the conversation to create a
+            comfortable and open environment.
+            2. Ask one question at a time, covering the 10 key topics outlined below. Wait for the member's
+            response before moving on to the next question.
+            - Personal background
+            - Business overview
+            - Expertise and skills
+            - Learning goals
+            - Target customers
+            - Challenges and successes
+            - Community involvement
+            - Hobbies and interests
+            - Collaboration opportunities
+            - Future vision
+            3. Use follow-up questions as needed to gather more details, specific examples, and deeper insights
+            related to each topic.
+            4. After completing the interview, take a moment to reflect on the conversation and organize your
+            thoughts in a <scratchpad>. Consider:
+            - Key takeaways and unique aspects of the member's story
+            - How their background and experiences have shaped their entrepreneurial journey
+            - The value they bring to the Guild of Entrepreneurs community
+            - Potential connections or collaboration opportunities with other members
+            5. Using the information gathered and your reflections, craft a well-structured and engaging article
+            that introduces the member to the Guild of Entrepreneurs community. Include the article inside
+            <article> tags.
+            - Open with a compelling hook that captures the essence of the member's story
+            - Provide an overview of their background, business, and aspirations
+            - Highlight their unique skills, experiences, and perspective
+            - Discuss their goals and how they hope to contribute to and benefit from the community
+            - Conclude with a forward-looking statement about their potential impact and future plans
+            Remember, the final article should facilitate meaningful connections and showcase the diverse
+            talents within the Guild of Entrepreneurs community.
+            """,
+            messages=st.session_state.conversation_history,
+        ) as stream:
+            for text in stream.text_stream:
+                response_text += text
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+        st.stop()
+
     # Add assistant response to conversation history
-        st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+    st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
 
-        # Display assistant response in chat message container
+    # Display assistant response in chat message container
+    try:
+        with st.chat_message("assistant"):
+            st.markdown(response_text)
+    except tornado.websocket.WebSocketClosedError:
+        st.warning("The connection was closed unexpectedly. Please refresh the page and try again.")
+        st.stop()
+
+    # Extract the article from the response
+    if "<article>" in response_text:
+        article_start = response_text.index("<article>") + len("<article>")
+        article_end = response_text.index("</article>")
+        article = response_text[article_start:article_end].strip()
+
+        # Generate the interview transcript
+        transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
+
+        # Send the email with the transcript and article
+        email_sender = st.secrets["EMAIL_USER"]
+        email_receiver = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
+        subject = "Chatbot Interview Transcript and Story"
+        body = f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{article}"
+        password = st.secrets["EMAIL_PASSWORD"]
+
         try:
-            with st.chat_message("assistant"):
-                st.markdown(response_text)
-        except tornado.websocket.WebSocketClosedError:
-            st.warning("The connection was closed unexpectedly. Please refresh the page and try again.")
+            msg = MIMEMultipart()
+            msg['From'] = email_sender
+            msg['To'] = email_receiver
+            msg['Subject'] = subject
+            msg.attach(MIMEText(body, 'plain'))
+
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(email_sender, password)
+            server.send_message(msg)
+            server.quit()
+
+            st.success('Email sent successfully! 🚀')
+        except Exception as e:
+            st.error(f"An error occurred while sending the email: {e}")
+
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
             st.stop()
-
-        # Extract the article from the response
-        if "<article>" in response_text:
-            article_start = response_text.index("<article>") + len("<article>")
-            article_end = response_text.index("</article>")
-            article = response_text[article_start:article_end].strip()
-
-            # Generate the interview transcript
-            transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
-
-            # Send the email with the transcript and article
-            email_sender = st.secrets["EMAIL_USER"]
-            email_receiver = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
-            subject = "Chatbot Interview Transcript and Story"
-            body = f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{article}"
-            password = st.secrets["EMAIL_PASSWORD"]
-
-            try:
-                msg = MIMEMultipart()
-                msg['From'] = email_sender
-                msg['To'] = email_receiver
-                msg['Subject'] = subject
-                msg.attach(MIMEText(body, 'plain'))
-
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.starttls()
-                server.login(email_sender, password)
-                server.send_message(msg)
-                server.quit()
-
-                st.success('Email sent successfully! 🚀')
-            except Exception as e:
-                st.error(f"An error occurred while sending the email: {e}")
-
-            except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
-                st.stop()
 
