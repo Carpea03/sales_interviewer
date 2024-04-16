@@ -51,7 +51,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
     try:
         with client.messages.stream(
             model="claude-3-opus-20240229",
-            max_tokens=10000,
+            max_tokens=4096,
             temperature=1,
             system="""
 You are an AI interviewer for the Guild of Entrepreneurs community. Your task is to engage in a
