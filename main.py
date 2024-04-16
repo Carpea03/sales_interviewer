@@ -150,8 +150,8 @@ if prompt:
                 st.error(f"An error occurred while sending the email: {str(e)}")
             except Exception as e:
                 st.error(f"An unexpected error occurred while sending the email: {str(e)}")
-            except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
-                st.stop()
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+            st.stop()
 
 st.rerun()
