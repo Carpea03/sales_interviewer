@@ -131,11 +131,11 @@ def send_email(transcript, story, recipient):
     except Exception as e:
         st.error(f"An error occurred while sending the email: {str(e)}")
 
-    # Extract the article from the response
-        if "<article>" in response_text:
-            article_start = response_text.index("<article>") + len("<article>")
-            article_end = response_text.index("</article>")
-            article = response_text[article_start:article_end].strip()
+# Extract the article from the response
+if "<article>" in response_text:
+    article_start = response_text.index("<article>") + len("<article>")
+    article_end = response_text.index("</article>")
+    article = response_text[article_start:article_end].strip()
 
     # Generate the interview transcript
     transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
@@ -146,3 +146,5 @@ def send_email(transcript, story, recipient):
 
     # Display a success message
     st.success("The interview is completed, and the article has been sent via email.")
+
+st.rerun()
