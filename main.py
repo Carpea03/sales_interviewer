@@ -123,32 +123,35 @@ if prompt:
             ) as stream:
                 for text in stream.text_stream:
                     response_text += text
-            # Add assistant response to conversation history
-            st.session_state.conversation_history.append(
-                {"role": "assistant", "content": response_text}
-            )
-            # Display assistant response in chat message container
-            with st.chat_message("assistant"):
-                st.markdown(response_text)
-            # Extract the article from the response
-            if "<article>" in response_text:
-                article_start = response_text.index("<article>") + len("<article>")
-                article_end = response_text.index("</article>")
-                article = response_text[article_start:article_end].strip()
-                # Generate the interview transcript
-                transcript = "\n".join(
-                    [
-                        f"{message['role']}: {message['content']}"
-                        for message in st.session_state.conversation_history
-                    ]
-                )
+                    # Add assistant response to conversation history
+        st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(response_text)
+
+        # Extract the article from the response
+        if "<article>" in response_text:
+            article_start = response_text.index("<article>") + len("<article>")
+            article_end = response_text.index("</article>")
+            article = response_text[article_start:article_end].strip()
+
+            # Generate the interview transcript
+            transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
+
+            try:
                 # Send the email with the transcript and article
                 recipient = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
                 send_email(transcript, article, recipient)
+
                 # Display a success message
-                st.success(
-                    "The interview is completed, and the article has been sent via email."
-                )
-        except Exception as e:
-            st.error(f"An error occurred: {str(e)}")
-            st.stop()
+                st.success("The interview is completed, and the article has been sent via email.")
+            except smtplib.SMTPException as e:
+                st.error(f"An error occurred while sending the email: {str(e)}")
+            except Exception as e:
+                st.error(f"An unexpected error occurred while sending the email: {str(e)}")
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+                st.stop()
+
+st.rerun()
