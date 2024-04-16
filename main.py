@@ -1,12 +1,12 @@
 import streamlit as st
 import sys
-   import subprocess
-
-   def install(package):
-       subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-   install('yagmail')
+import subprocess
 import smtplib
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+install('yagmail')
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
