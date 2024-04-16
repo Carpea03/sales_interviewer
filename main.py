@@ -74,7 +74,7 @@ talents within the Guild of Entrepreneurs community.
         },
         {"role": "assistant", "content": "Hello! I'm an AI interviewer for the Guild of Entrepreneurs community. I'm excited to learn more about you and your entrepreneurial journey. Let's start with your personal background. Can you tell me a bit about yourself and what led you to become an entrepreneur?"}
     ]
-    
+
 # Display chat messages from history on app rerun
 for message in st.session_state.conversation_history[1:]:
     with st.chat_message(message["role"]):
@@ -96,7 +96,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
     try:
         with client.messages.stream(
             model="claude-3-opus-20240229",
-            max_tokens=1000,
+            max_tokens=10000,
             temperature=1,
             messages=st.session_state.conversation_history,
         ) as stream:
