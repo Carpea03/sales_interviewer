@@ -25,7 +25,35 @@ client = Anthropic(api_key=anthropic_api_key)
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
     st.session_state.conversation_history = [
-        {"role": "user", "content": """
+        {"role": "user", "content": "Hi"
+        },
+        {"role": "assistant", "content": "Hello! I'm an AI interviewer for the Guild of Entrepreneurs community. I'm excited to learn more about you and your entrepreneurial journey. Let's start with your personal background. Can you tell me a bit about yourself and what led you to become an entrepreneur?"}
+    ]
+
+# Display chat messages from history on app rerun
+for message in st.session_state.conversation_history[1:]:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Accept user input
+prompt = st.chat_input("What would you like to share?",disabled=st.session_state.conversation_history[-1]["role"] == "user")
+if prompt:
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Add user message to conversation history
+    st.session_state.conversation_history.append({"role": "user", "content": prompt})
+
+    # Generate assistant response only if the last message in the conversation history is from the user
+if st.session_state.conversation_history[-1]["role"] == "user":
+    response_text = ""
+    try:
+        with client.messages.stream(
+            model="claude-3-opus-20240229",
+            max_tokens=10000,
+            temperature=1,
+            system="""
 You are an AI interviewer for the Guild of Entrepreneurs community. Your task is to engage in a
 conversation with a new member to learn more about their background, business, and aspirations. The
 goal is to gather information that will help you craft a compelling article introducing the member
@@ -71,33 +99,6 @@ that introduces the member to the Guild of Entrepreneurs community. Include the 
 Remember, the final article should facilitate meaningful connections and showcase the diverse
 talents within the Guild of Entrepreneurs community.
 """
-        },
-        {"role": "assistant", "content": "Hello! I'm an AI interviewer for the Guild of Entrepreneurs community. I'm excited to learn more about you and your entrepreneurial journey. Let's start with your personal background. Can you tell me a bit about yourself and what led you to become an entrepreneur?"}
-    ]
-
-# Display chat messages from history on app rerun
-for message in st.session_state.conversation_history[1:]:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Accept user input
-prompt = st.chat_input("What would you like to share?",disabled=st.session_state.conversation_history[-1]["role"] == "user")
-if prompt:
-    # Display user message in chat message container
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Add user message to conversation history
-    st.session_state.conversation_history.append({"role": "user", "content": prompt})
-
-    # Generate assistant response only if the last message in the conversation history is from the user
-if st.session_state.conversation_history[-1]["role"] == "user":
-    response_text = ""
-    try:
-        with client.messages.stream(
-            model="claude-3-opus-20240229",
-            max_tokens=10000,
-            temperature=1,
             messages=st.session_state.conversation_history,
         ) as stream:
             for text in stream.text_stream:
