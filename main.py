@@ -2,11 +2,6 @@ import streamlit as st
 import sys
 import subprocess
 import smtplib
-
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-install('yagmail')
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
@@ -124,38 +119,50 @@ if st.session_state.conversation_history[-1]["role"] == "user":
                 for text in stream.text_stream:
                     response_text += text
     # Add assistant response to conversation history
-            st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+        st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
 
-            # Display assistant response in chat message container
-            try:
-                with st.chat_message("assistant"):
-                    st.markdown(response_text)
-            except tornado.websocket.WebSocketClosedError:
-                st.warning("The connection was closed unexpectedly. Please refresh the page and try again.")
-                st.stop()
-
-            # Extract the article from the response
-            if "<article>" in response_text:
-                article_start = response_text.index("<article>") + len("<article>")
-                article_end = response_text.index("</article>")
-                article = response_text[article_start:article_end].strip()
-
-                # Generate the interview transcript
-                transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
-
-                try:
-                    # Send the email with the transcript and article
-                    recipient = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
-                    send_email(transcript, article, recipient)
-
-                    # Display a success message
-                    st.success("The interview is completed, and the article has been sent via email.")
-                except smtplib.SMTPException as e:
-                    st.error(f"An error occurred while sending the email: {str(e)}")
-                except Exception as e:
-                    st.error(f"An unexpected error occurred while sending the email: {str(e)}")
-
-        except Exception as e:
-            st.error(f"An error occurred: {str(e)}")
+        # Display assistant response in chat message container
+        try:
+            with st.chat_message("assistant"):
+                st.markdown(response_text)
+        except tornado.websocket.WebSocketClosedError:
+            st.warning("The connection was closed unexpectedly. Please refresh the page and try again.")
             st.stop()
+
+        # Extract the article from the response
+        if "<article>" in response_text:
+            article_start = response_text.index("<article>") + len("<article>")
+            article_end = response_text.index("</article>")
+            article = response_text[article_start:article_end].strip()
+
+            # Generate the interview transcript
+            transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
+
+            # Send the email with the transcript and article
+            email_sender = st.secrets["EMAIL_USER"]
+            email_receiver = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
+            subject = "Chatbot Interview Transcript and Story"
+            body = f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{article}"
+            password = st.secrets["EMAIL_PASSWORD"]
+
+            try:
+                msg = MIMEMultipart()
+                msg['From'] = email_sender
+                msg['To'] = email_receiver
+                msg['Subject'] = subject
+                msg.attach(MIMEText(body, 'plain'))
+
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(email_sender, password)
+                server.send_message(msg)
+                server.quit()
+
+                st.success('Email sent successfully! 🚀')
+            except Exception as e:
+                st.error(f"An error occurred while sending the email: {e}")
+
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+                st.stop()
 
