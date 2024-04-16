@@ -117,13 +117,32 @@ talents within the Guild of Entrepreneurs community.
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
-    msg = MIMEMultipart()
-    msg["From"] = email_user
-    msg["To"] = recipient
-    msg["Subject"] = "Chatbot Interview Transcript and Story"
-    msg.attach(MIMEText(f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"))
-    server = smtplib.SMTP(email_server, email_port)
-    server.starttls()
-    server.login(email_user, email_password)
-    server.send_message(msg)
-    server.quit()
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = email_user
+        msg["To"] = recipient
+        msg["Subject"] = "Chatbot Interview Transcript and Story"
+        msg.attach(MIMEText(f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"))
+        server = smtplib.SMTP(email_server, email_port)
+        server.starttls()
+        server.login(email_user, email_password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        st.error(f"An error occurred while sending the email: {str(e)}")
+
+        if "<article>" in response_text:
+    # Extract the article from the response
+        article_start = response_text.index("<article>") + len("<article>")
+        article_end = response_text.index("</article>")
+        article = response_text[article_start:article_end].strip()
+
+    # Generate the interview transcript
+    transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
+
+    # Send the email with the transcript and article
+    recipient = "alexcarpenter2000@gmail.com"  # Replace with the actual recipient email address
+    send_email(transcript, article, recipient)
+
+    # Display a success message
+    st.success("The interview is completed, and the article has been sent via email.")
