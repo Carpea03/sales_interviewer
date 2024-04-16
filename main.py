@@ -1,28 +1,38 @@
 import streamlit as st
 import smtplib
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
+import tornado.websocket
 
 # Function to send email with transcript and generated story
-def send_email(transcript, story, recipient):
-    try:
-        msg = MIMEMultipart()
-        msg["From"] = email_user
-        msg["To"] = recipient
-        msg["Subject"] = "Chatbot Interview Transcript and Story"
-        msg.attach(
-            MIMEText(
-                f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"
-            )
-        )
-        server = smtplib.SMTP(email_server, email_port)
-        server.starttls()
-        server.login(email_user, email_password)
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        st.error(f"An error occurred while sending the email: {str(e)}")
+def send_email(transcript, story, recipient, max_retries=3, retry_delay=5):
+    retries = 0
+    while retries < max_retries:
+        try:
+            msg = MIMEMultipart()
+            msg["From"] = email_user
+            msg["To"] = recipient
+            msg["Subject"] = "Chatbot Interview Transcript and Story"
+            msg.attach(MIMEText(f"Interview Transcript:\n\n{transcript}\n\nGenerated Story:\n\n{story}"))
+
+            with smtplib.SMTP(email_server, email_port) as server:
+                server.starttls()
+                server.login(email_user, email_password)
+                server.send_message(msg)
+
+            return True
+        except smtplib.SMTPException as e:
+            st.warning(f"An error occurred while sending the email: {str(e)}. Retrying in {retry_delay} seconds...")
+            retries += 1
+            time.sleep(retry_delay)
+        except Exception as e:
+            st.error(f"An unexpected error occurred while sending the email: {str(e)}")
+            return False
+
+    st.error(f"Failed to send the email after {max_retries} retries.")
+    return False
 
 st.title("Chatbot Interviewer")
 st.write(
@@ -73,7 +83,7 @@ if prompt:
     st.session_state.conversation_history.append({"role": "user", "content": prompt})
 
     # Generate assistant response only if the last message in the conversation history is from the user
-    if st.session_state.conversation_history[-1]["role"] == "user":
+if st.session_state.conversation_history[-1]["role"] == "user":
         response_text = ""
         try:
             with client.messages.stream(
