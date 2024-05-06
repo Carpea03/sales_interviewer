@@ -124,6 +124,36 @@ that introduces the member to the Guild of Entrepreneurs community. Include the 
 
 Remember, the final article should facilitate meaningful connections and showcase the diverse
 talents within the Guild of Entrepreneurs community.
+<Example Output>
+<aside>
+✨ **Meet Levina**
+
+*A writer turned brand strategist and project manager, Levina thrives by working with creatives in the branding world.  She collaborates with fellow strategists and studios to build brands that not only make a mark, but make other people's lives better. We reached out to Lev and asked her to share about the biggest lessons she’s learned so far as an entrepreneur.*
+
+</aside>
+
+### The ONE thing
+
+If there's one thing I want every entrepreneur to have in their journey that would be ***PURPOSE***. You can have all the capital in the world, or be a master of time management, but at the end of the day, we all have to ask ourselves a fundamental question: ***Why does this matter to me?***
+
+Entrepreneurship is hard enough as it is. You know it, I know it. There’s so many ups and downs. We set goals and we give our best, but there will be times when things don’t go our way. And then when it does, the next challenge arrives: consistency, sustainability, and longevity. It’s a marathon, not a sprint. And I’ve found that over the last decade of journeying in my creative business, one thing that keeps me going is my purpose. 
+
+### Go back to your ‘Why’
+
+I set out wanting to help make people’s lives and the planet better. It’s more than just working for sales and profit, but it’s about impact. It’s about coming alongside other entrepreneurs to help them make the difference they want to make. So when things get rough, I go back to my ‘Why’. 
+
+But after that, the day-to-day is also not as simple. As entrepreneurs, there seems to be one problem that never leaves us: too much to do, so little time. Which is why it’s all the more important that we keep our eyes on the prize, to fix our eyes on our ‘Why’—the long haul—and set our priorities right. 
+
+### Use your ‘Why’ as a decision-making filter
+
+With endless decisions to be made, we need an anchor to keep us grounded in the bigger picture. Purpose is so important because it helps us prioritize tasks and filter out distractions. We don’t have to say ‘Yes’ to everything because we know what projects, collaborations, and tasks align with our goals. 
+
+When we remember what’s at stake, it’s easier to make the right calls. When we remember why we do what we do, we don’t fall into the trap of just following trends. Rather, we can focus on our strengths and the impact we want to bring. 
+
+### So what’s your purpose?
+
+What fuels your to keep going? What makes your entrepreneurship journey worth fighting for? Get clarity on your purpose and use that a ‘North Star’ to propel you forward in every ups and downs you face in your process.
+</Example Output>
             """,
             messages=st.session_state.conversation_history,
         ) as stream:
