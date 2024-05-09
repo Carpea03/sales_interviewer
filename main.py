@@ -124,7 +124,7 @@ that introduces the member to the Guild of Entrepreneurs community. Include the 
 
 Remember, the final article should facilitate meaningful connections and showcase the diverse
 talents within the Guild of Entrepreneurs community.
-<Example Output>
+<Example Output 1>
 <aside>
 ✨ **Meet Levina**
 
@@ -153,7 +153,25 @@ When we remember what’s at stake, it’s easier to make the right calls. When 
 ### So what’s your purpose?
 
 What fuels your to keep going? What makes your entrepreneurship journey worth fighting for? Get clarity on your purpose and use that a ‘North Star’ to propel you forward in every ups and downs you face in your process.
-</Example Output>
+</Example Output 1>
+
+<Example Output 2>
+**Have you ever met someone who just seems to get it?**  That's my friend Alex.  He's been this way since way back in high school, hustling and selling pencil cases (seriously, who even knew there was a market for that?).  Even then, he could see what people needed and figure out how to make it happen.
+
+**Fast forward to today, and Alex is a serial entrepreneur extraordinaire!**  He's launched companies across all sorts of industries.  We were curious – what drives him? Turns out, it's all about understanding people. He's fascinated by what motivates them, what challenges they face, and how to build something amazing to solve those problems. And guess what?  He's got the background to prove it. Accounting?  Nailed it.  Educational psychology?  Yep, that too. Now he's even diving into software engineering—the guy just never stops learning!
+
+**One thing Alex emphasized is the importance of learning from everything, the wins, the losses, and the experiences that leave you scratching your head.** He believes that taking the time to really reflect on what went well (and what went hilariously wrong) is the secret weapon for growth, both personally and professionally. By reflecting on his own journey, he's uncovered some seriously cool insights that have totally reshaped his approach to building businesses.
+
+**One of the biggest things he's learned? Making money is awesome, but it's not everything.** Sure, a business needs to turn a profit to keep the lights on and keep helping people. But Alex says it's also crucial to remember why you started in the first place – to make a positive impact and create something valuable for people's lives.
+
+**Sometimes entrepreneurs feel weird about making money, like they're somehow taking advantage of people.** Alex says that's totally not the case!  If you're solving a real problem and making people's lives easier, you deserve to be rewarded for that. The key is finding that sweet spot between making a profit and staying true to your mission. That's the recipe for building a business that rocks and makes a difference.
+
+**Speaking of making a difference, Alex is all about getting to know his customers on a deeper level.**  He believes the best way to understand what people need is to jump right in with them, ask a ton of questions, and figure out what's really going on beneath the surface.  By getting that deep understanding, you can create solutions that tackle the root of the problem, not just the band-aid fixes.
+
+**Alex uses a cool doctor analogy to explain this.**  A good doctor wouldn't just throw pain meds at your backache without asking questions, right?  They'd dig deeper to find the real cause.  Entrepreneurs need to do the same!  By working hand-in-hand with clients and asking the right questions, you can help them figure out what they really need and come up with solutions that work for the long haul.
+
+**Alex is still out there exploring the world of software engineering and working directly with clients.**  His dedication to learning and using his knowledge to help people and create awesome things is never-ending.  His whole journey, with all its twists and turns, is a total inspiration to all of us in the Guild of Entrepreneurs.  So next time you're feeling stuck, remember Alex and his dedication to helping people and building something sustainable.
+</Example Output 2>
             """,
             messages=st.session_state.conversation_history,
         ) as stream:
