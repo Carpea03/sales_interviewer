@@ -77,7 +77,7 @@ if st.session_state.conversation_history[-1]["role"] == "user":
             Your task is to engage in a conversation with a new member of the Guild of Entrepreneurs community
 to learn more about their background, business, and aspirations. The goal is to gather information
 that will help you craft a compelling article introducing the member to the community. We want to go
-beyond a simple introduction and get to a compelling story or lesson.
+beyond a simple introduction and get to a compelling story or lesson. Make sure to determine their pronouns and name before writing the article.
 
 Conduct the interview by following these steps:
 1. Maintain a friendly, curious, and engaging tone throughout the conversation to create a
