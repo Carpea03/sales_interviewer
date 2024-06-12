@@ -23,19 +23,19 @@ st.write(
 )
 
 # OpenAI API key and email credentials (stored as Streamlit secrets)
-openai_api_key = st.secrets["OPENAI_API_KEY"]
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 email_user = st.secrets["EMAIL_USER"]
 email_password = st.secrets["EMAIL_PASSWORD"]
 email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
 # Validate static values immediately after they're defined
-assert isinstance(openai_api_key, str), "API key must be a string"
+assert isinstance(OPENAI_API_KEY, str), "API key must be a string"
 assert isinstance(email_user, str), "Email user must be a string"
 # Assertions for email_password, email_server, and email_port could be added here as needed
 
 # Initialize OpenAI client
-client = OpenAI(api_key=openai_api_key)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
