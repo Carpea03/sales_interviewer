@@ -10,11 +10,23 @@ import uuid
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
+    sender = email_user
+    password = email_password
+    subject = "Sales Interview Transcript"
+    content = f"Interview Transcript:\n\n{transcript}"
+
     try:
-        yag = yagmail.SMTP(email_user, email_password)
-        subject = "Sales Interview Transcript"
-        content = f"Interview Transcript:\n\n{transcript}"
-        yag.send(to=recipient, subject=subject, contents=content)
+        msg = MIMEMultipart()
+        msg['From'] = sender
+        msg['To'] = recipient
+        msg['Subject'] = subject
+        
+        msg.attach(MIMEText(content, 'plain'))
+        
+        with smtplib.SMTP(email_server, email_port) as server:
+            server.starttls()
+            server.login(sender, password)
+            server.send_message(msg)
         return True
     except Exception as e:
         st.error(f"An error occurred while sending the email: {str(e)}")
@@ -68,7 +80,9 @@ email_port = st.secrets["EMAIL_PORT"]
 # Validate static values immediately after they're defined
 assert isinstance(ANTHROPIC_API_KEY, str), "API key must be a string"
 assert isinstance(email_user, str), "Email user must be a string"
-# Assertions for email_password, email_server, and email_port could be added here as needed
+assert isinstance(email_password, str), "Email password must be a string"
+assert isinstance(email_server, str), "Email server must be a string"
+assert isinstance(email_port, int), "Email port must be an integer"
 
 # Initialize Anthropic client
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
@@ -97,10 +111,20 @@ for message in st.session_state.conversation_history[1:]:
 if st.button("End Conversation"):
     end_conversation()
 
+# Initialize the conversation history if it doesn't exist
+if "conversation_history" not in st.session_state:
+    st.session_state.conversation_history = []
+
+# Check if the conversation history is not empty before accessing the last item
+if st.session_state.conversation_history:
+    disabled = st.session_state.conversation_history[-1]["role"] == "user"
+else:
+    disabled = False
+
 # Accept user input
 prompt = st.chat_input(
     "What would you like to share?",
-    disabled=st.session_state.conversation_history[-1]["role"] == "user",
+    disabled=disabled
 )
 if prompt:
     # Display user message in chat message container
