@@ -1,4 +1,6 @@
 [
+  "We never want conversations to be deleted",
+  "Keeping conventions.md in mind, the conversations are not being saved anywhere in the codebase",
   "We want Claude to use the XML tags <response></response> like it is told to in the prompt but we don't want those to show up to the user",
   "Keeping conventions.md in mind, fix the error: An error occurred while sending the email: name 'yagmail' is not defined",
   "The code currently sends an email when <article> is used in the chat, can we remove that and replace it with sending the email when the user pushes the \"End Conversation\" button (which needs to be created. Do this keeping conventions.md in mind as well",

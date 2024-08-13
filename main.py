@@ -120,7 +120,6 @@ client = Anthropic(api_key=ANTHROPIC_API_KEY)
 # Initialize conversation ID in session state if it doesn't exist
 if "conversation_id" not in st.session_state:
     st.session_state.conversation_id = str(uuid.uuid4())
-    st.write(f"New conversation started. ID: {st.session_state.conversation_id}")
 
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
