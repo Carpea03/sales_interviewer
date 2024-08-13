@@ -35,6 +35,24 @@ def save_conversation(new_messages, conversation_id):
     except Exception as e:
         st.error(f"An error occurred while saving the conversation: {str(e)}")
 
+def end_conversation():
+    """Handle the end of the conversation, including sending the email."""
+    transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
+    
+    email_sender = st.secrets["EMAIL_USER"]
+    email_receiver = "alexcarpenter2000@gmail.com"
+    subject = "Sales Interview Transcript"
+    body = f"Interview Transcript:\n\n{transcript}"
+    
+    try:
+        send_email(transcript, "", email_receiver)
+        st.success('Thank you for the conversation. The transcript has been sent via email.')
+        # Reset the conversation
+        st.session_state.conversation_history = []
+        st.session_state.conversation_id = str(uuid.uuid4())
+    except Exception as e:
+        st.error(f"An error occurred while ending the conversation: {e}")
+
 st.title("Sales Interviewer")
 st.write(
     "This chatbot will interview you and generate content based on your responses."
