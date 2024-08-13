@@ -48,10 +48,10 @@ This document outlines the conventions used in the Sales Interviewer Chatbot pro
 - Conduct code reviews for all pull requests
 - Ensure code adheres to these conventions before merging
 
-## Conversation Logging
-- Save all conversations between the chatbot and users
-- Use a structured format (e.g., JSON) for storing conversation data
-- Include timestamps, user inputs, and chatbot responses in the logs
-- Store conversation logs in a dedicated directory within the project
+## Conversation Management
+- Store conversation history in Streamlit's session state during active sessions
+- Use a structured format (e.g., list of dictionaries) for storing conversation data
+- Include timestamps, user inputs, and chatbot responses in the conversation history
+- Implement a method to display the conversation history to the user if needed
 
 These conventions are subject to change as the project evolves. Always refer to the latest version of this document in the repository.
