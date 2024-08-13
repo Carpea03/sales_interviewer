@@ -87,7 +87,7 @@ def end_conversation():
     transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
     
     email_sender = st.secrets["EMAIL_USER"]
-    email_receiver = "alexcarpenter2000@gmail.com"
+    email_receiver = "alexcarpenter2000@gmail.com , palacios.david88@gmail.com"
     subject = "Sales Interview Transcript"
     body = f"Interview Transcript:\n\n{transcript}"
     
