@@ -1,4 +1,5 @@
 [
+  "Traceback (most recent call last): File \"/home/adminuser/venv/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/exec_code.py\", line 85, in exec_func_with_error_handling File \"/home/adminuser/venv/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/script_runner.py\", line 576, in code_to_exec File \"/mount/src/sales_interviewer/main.py\", line 141, in <module> end_conversation() File \"/mount/src/sales_interviewer/main.py\", line 83, in end_conversation logging.error(f\"Error ending conversation: {str(e)}\") UnboundLocalError: cannot access local variable 'e' where it is not associated with a value",
   "We never want conversations to be deleted",
   "Keeping conventions.md in mind, the conversations are not being saved anywhere in the codebase",
   "We want Claude to use the XML tags <response></response> like it is told to in the prompt but we don't want those to show up to the user",
