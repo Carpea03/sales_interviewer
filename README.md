@@ -68,7 +68,6 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 
 Acknowledgements
 Streamlit for the interactive web app framework.
-OpenAI for the GPT-4o model.
 Tornado for websocket support.
 
 ## Project Conventions

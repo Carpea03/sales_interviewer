@@ -1,0 +1,7 @@
+[
+  "update the README.md and conventions.md",
+  "Update this project to use Anthropic Claude 3.5 instead of OpenAI",
+  "Can you create the conventions.md file and put that inside",
+  "a",
+  "Act as an expert software engineer, ask me one question at a time until you have enough information to write a detailed conventions.md file according to all the industry best practices. We will use this file to work together on writing and improving this project. For each question you ask make sure to inform me of the options and their respective trade offs. To start read all the files in this project to familiarise yourself with what has already been done."
+]
