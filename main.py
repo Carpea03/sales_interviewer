@@ -7,6 +7,14 @@ import tornado.websocket
 import os
 from datetime import datetime
 import uuid
+import re
+
+def strip_xml_tags(text):
+    # Remove <response> and </response> tags
+    text = re.sub(r'</?response>', '', text)
+    # Remove <insights_summary> and </insights_summary> tags
+    text = re.sub(r'</?insights_summary>', '', text)
+    return text.strip()
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
@@ -208,6 +216,12 @@ Remember to maintain a friendly and professional tone throughout the interview, 
     st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
     save_conversation([{"role": "assistant", "content": response_text}], st.session_state.conversation_id)
 
+    # Strip XML tags from the response
+    cleaned_response = strip_xml_tags(response_text)
+
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
-        st.markdown(response_text)
+        st.markdown(cleaned_response)
+
+    # Update the conversation history with the cleaned response
+    st.session_state.conversation_history[-1]["content"] = cleaned_response
