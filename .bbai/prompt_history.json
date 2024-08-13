@@ -1,4 +1,8 @@
 [
+  "The code currently sends an email when <article> is used in the chat, can we remove that and replace it with sending the email when the user pushes the \"End Conversation\" button (which needs to be created. Do this keeping conventions.md in mind as well",
+  "We want a new txt file for each conversation",
+  "Implement append-only logging instead of overwriting the file each time.",
+  "Can we make it so that the conversation is saved progressively in a txt file in the codebase",
   "update the README.md and conventions.md",
   "Update this project to use Anthropic Claude 3.5 instead of OpenAI",
   "Can you create the conventions.md file and put that inside",

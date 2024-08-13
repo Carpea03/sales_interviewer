@@ -13,7 +13,7 @@ def send_email(transcript, story, recipient):
     try:
         yag = yagmail.SMTP(email_user, email_password)
         subject = "Sales Interview Transcript"
-        content = f"Interview Transcript:\n\n{transcript}\n\nGenerated Content:\n\n{story}"
+        content = f"Interview Transcript:\n\n{transcript}"
         yag.send(to=recipient, subject=subject, contents=content)
         return True
     except Exception as e:
