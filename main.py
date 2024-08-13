@@ -117,6 +117,15 @@ email_port = st.secrets["EMAIL_PORT"]
 # MongoDB Atlas connection
 st.write("Attempting to connect to MongoDB Atlas")
 try:
+    # Check if MongoClient is in the global namespace
+    if 'MongoClient' not in globals():
+        st.error("MongoClient is not in the global namespace")
+        raise NameError("MongoClient is not defined")
+    
+    st.write(f"MongoClient type: {type(MongoClient)}")
+
+    # Proceed with the connection attempt
+    try:
     client = MongoClient(st.secrets["mongo"]["uri"])
     db = client.sales_interviewer
     conversations = db.conversations
