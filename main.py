@@ -73,14 +73,12 @@ def save_conversation(new_messages, conversation_id):
         logging.error(error_msg)
         st.error(error_msg)
 
-
-
-        logging.info(f"Conversation ended and email sent for conversation ID: {st.session_state.conversation_id}")
 def end_conversation():
     """Handle the end of the conversation, including sending the email."""
+    logging.info(f"Attempting to end conversation for ID: {st.session_state.conversation_id}")
+    
     transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
     
-    logging.error(f"Error ending conversation: {str(e)}")
     email_sender = st.secrets["EMAIL_USER"]
     email_receiver = "alexcarpenter2000@gmail.com"
     subject = "Sales Interview Transcript"
@@ -90,11 +88,14 @@ def end_conversation():
         send_email(transcript, "", email_receiver)
         st.success('Thank you for the conversation. The transcript has been sent via email.')
         # Reset the conversation
+        logging.info(f"Conversation ended and email sent for conversation ID: {st.session_state.conversation_id}")
         st.session_state.conversation_history = []
         st.session_state.conversation_id = str(uuid.uuid4())
     except Exception as e:
         st.error(f"An error occurred while ending the conversation: {e}")
-
+        error_msg = f"An error occurred while ending the conversation: {str(e)}"
+        logging.error(error_msg)
+        st.error(error_msg)
 st.title("Sales Interviewer")
 st.write(
     "This chatbot will interview you and generate content based on your responses."
