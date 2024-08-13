@@ -50,8 +50,10 @@ This document outlines the conventions used in the Sales Interviewer Chatbot pro
 
 ## Conversation Management
 - Store conversation history in Streamlit's session state during active sessions
+- Use MongoDB Atlas for permanent storage of all conversations
 - Use a structured format (e.g., list of dictionaries) for storing conversation data
 - Include timestamps, user inputs, and chatbot responses in the conversation history
 - Implement a method to display the conversation history to the user if needed
+- Ensure proper error handling and retry mechanisms for database operations
 
 These conventions are subject to change as the project evolves. Always refer to the latest version of this document in the repository.
