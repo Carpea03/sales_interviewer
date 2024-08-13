@@ -113,6 +113,14 @@ email_password = st.secrets["EMAIL_PASSWORD"]
 email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
+# MongoDB Atlas connection
+try:
+    client = MongoClient(st.secrets["mongo"]["uri"])
+    db = client.sales_interviewer
+    conversations = db.conversations
+except Exception as e:
+    st.error(f"Failed to connect to MongoDB Atlas: {e}")
+
 # Validate static values immediately after they're defined
 assert isinstance(ANTHROPIC_API_KEY, str), "API key must be a string"
 assert isinstance(email_user, str), "Email user must be a string"
