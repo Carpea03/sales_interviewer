@@ -70,3 +70,16 @@ Acknowledgements
 Streamlit for the interactive web app framework.
 OpenAI for the GPT-4o model.
 Tornado for websocket support.
+
+## Project Conventions
+
+This project follows these conventions:
+
+1. **Programming Language**: Python
+2. **Code Style**: PEP 8
+3. **Version Control**: GitHub Flow
+4. **Testing**: Unit Testing with pytest
+5. **Documentation**: Inline comments and docstrings
+6. **Dependency Management**: requirements.txt with pip
+
+For detailed conventions, please refer to the full conventions document in the project repository.
