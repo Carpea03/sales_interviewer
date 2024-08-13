@@ -86,7 +86,7 @@ def end_conversation():
     
     try:
         send_email(transcript, "", email_receiver)
-        st.success('Thank you for the conversation. The transcript has been sent via email.')
+        st.success('Thank you for the conversation. Have a great day!')
         # Reset the conversation
         logging.info(f"Conversation ended and email sent for conversation ID: {st.session_state.conversation_id}")
         st.session_state.conversation_history = []
@@ -166,7 +166,7 @@ if prompt:
     save_conversation([{"role": "user", "content": prompt}], st.session_state.conversation_id)
 
     # Generate assistant response only if the last message in the conversation history is from the user
-if st.session_state.conversation_history[-1]["role"] == "user":
+if st.session_state.conversation_history and st.session_state.conversation_history[-1]["role"] == "user":
     response_text = ""
     try:
         response = client.messages.create(
