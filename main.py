@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 import uuid
 import logging
-import shutil
+
 import re
 
 def strip_xml_tags(text):
@@ -73,18 +73,7 @@ def save_conversation(new_messages, conversation_id):
         logging.error(error_msg)
         st.error(error_msg)
 
-# Function to clean up old conversation files (older than 30 days)
-def cleanup_old_conversations():
-    current_time = datetime.now()
-    for filename in os.listdir(CONVERSATION_DIR):
-        file_path = os.path.join(CONVERSATION_DIR, filename)
-        file_modified_time = datetime.fromtimestamp(os.path.getmtime(file_path))
-        if (current_time - file_modified_time).days > 30:
-            os.remove(file_path)
-            logging.info(f"Removed old conversation file: {file_path}")
 
-# Run cleanup at the start of each session
-cleanup_old_conversations()
 
         logging.info(f"Conversation ended and email sent for conversation ID: {st.session_state.conversation_id}")
 def end_conversation():
