@@ -53,15 +53,13 @@ os.makedirs(CONVERSATION_DIR, exist_ok=True)
 
 # Function to save new messages to the current conversation file
 def save_conversation(new_messages, conversation_id):
-    filename = os.path.join(CONVERSATION_DIR, f"conversation_{conversation_id}.json")
     try:
         timestamp = datetime.now().isoformat()
-        if os.path.exists(filename):
-            with open(filename, "r") as f:
-                conversation_data = json.load(f)
-        else:
+        conversation_data = conversations.find_one({"conversation_id": conversation_id})
+        
+        if not conversation_data:
             conversation_data = {"conversation_id": conversation_id, "messages": []}
-            logging.info(f"New conversation file created: {filename}")
+            logging.info(f"New conversation created: {conversation_id}")
         
         for message in new_messages:
             conversation_data["messages"].append({
@@ -70,9 +68,12 @@ def save_conversation(new_messages, conversation_id):
                 "content": message["content"]
             })
         
-        with open(filename, "w") as f:
-            json.dump(conversation_data, f, indent=2)
-        logging.info(f"Conversation updated: {filename}")
+        conversations.update_one(
+            {"conversation_id": conversation_id},
+            {"$set": conversation_data},
+            upsert=True
+        )
+        logging.info(f"Conversation updated: {conversation_id}")
     except Exception as e:
         error_msg = f"An unexpected error occurred while saving the conversation: {str(e)}"
         logging.error(error_msg)
