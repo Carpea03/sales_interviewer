@@ -93,6 +93,10 @@ for message in st.session_state.conversation_history[1:]:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# Add "End Conversation" button
+if st.button("End Conversation"):
+    end_conversation()
+
 # Accept user input
 prompt = st.chat_input(
     "What would you like to share?",
