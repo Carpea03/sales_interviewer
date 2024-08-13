@@ -6,6 +6,7 @@ from anthropic import Anthropic
 import tornado.websocket
 import os
 from datetime import datetime
+import uuid
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
@@ -19,15 +20,18 @@ def send_email(transcript, story, recipient):
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
 
-# Function to append new messages to the conversation log file
-def save_conversation(new_messages):
+# Function to save new messages to the current conversation file
+def save_conversation(new_messages, conversation_id):
+    filename = f"conversation_{conversation_id}.txt"
     try:
-        with open("conversation_log.txt", "a") as f:
+        with open(filename, "a") as f:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            f.write(f"\n--- New messages at {timestamp} ---\n")
+            if os.path.getsize(filename) == 0:
+                f.write(f"Conversation started at {timestamp}\n\n")
+            else:
+                f.write(f"\n--- New messages at {timestamp} ---\n")
             for message in new_messages:
                 f.write(f"{message['role']}: {message['content']}\n")
-            f.write("\n")
     except Exception as e:
         st.error(f"An error occurred while saving the conversation: {str(e)}")
 
@@ -50,6 +54,11 @@ assert isinstance(email_user, str), "Email user must be a string"
 
 # Initialize Anthropic client
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
+
+# Initialize conversation ID in session state if it doesn't exist
+if "conversation_id" not in st.session_state:
+    st.session_state.conversation_id = str(uuid.uuid4())
+    st.write(f"New conversation started. ID: {st.session_state.conversation_id}")
 
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
@@ -78,7 +87,7 @@ if prompt:
 
     # Add user message to conversation history
     st.session_state.conversation_history.append({"role": "user", "content": prompt})
-    save_conversation([{"role": "user", "content": prompt}])
+    save_conversation([{"role": "user", "content": prompt}], st.session_state.conversation_id)
 
     # Generate assistant response only if the last message in the conversation history is from the user
 if st.session_state.conversation_history[-1]["role"] == "user":
@@ -151,7 +160,7 @@ Remember to maintain a friendly and professional tone throughout the interview, 
 
     # Add assistant response to conversation history
     st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
-    save_conversation([{"role": "assistant", "content": response_text}])
+    save_conversation([{"role": "assistant", "content": response_text}], st.session_state.conversation_id)
 
     # Display assistant response in chat message container
     try:
