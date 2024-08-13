@@ -106,7 +106,7 @@ if "conversation_history" not in st.session_state:
         {"role": "user", "content": "Hi"},
         {
             "role": "assistant",
-            "content": "Hello! I'm an AI interviewer can you tell me which clients you'd like to talk about today?",
+            "content": "Hello! It's great to meet you. I'm an AI assistant here to conduct an interview about your experiences as a sales professional. I'm looking forward to learning from you and gathering insights that could be helpful for other salespeople. To start off, could you tell me a bit about the organization or organizations you currently sell for?",
         },
     ]
 
@@ -196,12 +196,6 @@ When responding to the current question or asking a new question, format your re
 <response>
 [Your response to the current question or your next question for the interviewee]
 </response>
-
-If you have gathered enough information to summarize insights, include a summary at the end of your response:
-
-<insights_summary>
-[List of key insights and actionable advice for other sales professionals]
-</insights_summary>
 
 Remember to maintain a friendly and professional tone throughout the interview, and adapt your questions based on the flow of the conversation and the information provided by the interviewee.
             """,
