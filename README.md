@@ -1,5 +1,5 @@
 Sales Interviewer Chatbot
-This project is a Streamlit-based application that utilizes OpenAI's GPT-4o model to create an interactive chatbot. The chatbot interviews sales professionals and generates content based on their responses. Additionally, the application can send an email with the interview transcript and generated story.
+This project is a Streamlit-based application that utilizes Anthropic's Claude 3.5 model to create an interactive chatbot. The chatbot interviews sales professionals and generates content based on their responses. Additionally, the application can send an email with the interview transcript and generated story.
 
 Features
 Interactive chatbot for interviewing sales professionals
@@ -22,7 +22,7 @@ Install the required packages:
 
 bash
 Copy code
-pip install streamlit openai smtplib tornado yagmail
+pip install streamlit anthropic smtplib tornado yagmail
 Set up Streamlit secrets:
 
 Create a file named .streamlit/secrets.toml in the root directory of your project with the following content:
@@ -30,7 +30,7 @@ Create a file named .streamlit/secrets.toml in the root directory of your projec
 toml
 Copy code
 [secrets]
-OPENAI_API_KEY = "your_openai_api_key"
+ANTHROPIC_API_KEY = "your_anthropic_api_key"
 EMAIL_USER = "your_email@example.com"
 EMAIL_PASSWORD = "your_email_password"
 EMAIL_SERVER = "smtp.your_email_provider.com"
@@ -53,7 +53,7 @@ Email Sending: After the interview, the app extracts the article from the genera
 Configuration
 Ensure the following configurations are set correctly in the secrets.toml file:
 
-OPENAI_API_KEY: Your OpenAI API key.
+ANTHROPIC_API_KEY: Your Anthropic API key.
 EMAIL_USER: Your email address used for sending emails.
 EMAIL_PASSWORD: Your email password or app-specific password.
 EMAIL_SERVER: The SMTP server of your email provider.
