@@ -80,7 +80,7 @@ def end_conversation():
     """Handle the end of the conversation, including sending the email."""
     transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
     
-        logging.error(f"Error ending conversation: {str(e)}")
+    logging.error(f"Error ending conversation: {str(e)}")
     email_sender = st.secrets["EMAIL_USER"]
     email_receiver = "alexcarpenter2000@gmail.com"
     subject = "Sales Interview Transcript"
