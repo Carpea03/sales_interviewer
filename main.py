@@ -149,6 +149,10 @@ except KeyError as e:
     error_msg = f"Failed to retrieve MongoDB URI from secrets: {e}"
     st.error(error_msg)
     logging.error(error_msg, exc_info=True)
+except AttributeError as e:
+    error_msg = f"AttributeError occurred (possibly due to pymongo import issue): {e}"
+    st.error(error_msg)
+    logging.error(error_msg, exc_info=True)
 except pymongo.errors.ConnectionFailure as e:
     error_msg = f"Failed to connect to MongoDB Atlas: {e}"
     st.error(error_msg)
