@@ -9,7 +9,7 @@ from datetime import datetime
 import uuid
 import logging
 import json
-
+from pymongo import MongoClient
 import re
 
 def strip_xml_tags(text):
