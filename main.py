@@ -10,6 +10,7 @@ import uuid
 import logging
 import json
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 import re
 
 def strip_xml_tags(text):
