@@ -8,7 +8,6 @@ Email functionality to send the interview transcript and generated content
 Requirements
 Python 3.7 or higher
 Streamlit
-OpenAI Python client library
 SMTP library for email functionality
 Tornado for websocket support
 Setup and Installation
