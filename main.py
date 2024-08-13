@@ -125,7 +125,42 @@ try:
     st.write(f"MongoClient type: {type(MongoClient)}")
 
     # Proceed with the connection attempt
-    try:
+    st.write("Retrieving MongoDB URI from secrets")
+    mongo_uri = st.secrets["mongo"]["uri"]
+    st.write("MongoDB URI retrieved successfully")
+    
+    st.write("Initializing MongoClient")
+    client = MongoClient(mongo_uri)
+    st.write("MongoClient initialized")
+    
+    st.write("Accessing database and collection")
+    db = client.sales_interviewer
+    conversations = db.conversations
+    st.write("Database and collection accessed successfully")
+    
+    st.write("Testing connection")
+    client.admin.command('ping')
+    st.write("Connection test successful")
+    
+    logging.info("Successfully connected to MongoDB Atlas")
+    st.write("Successfully connected to MongoDB Atlas")
+except KeyError as e:
+    error_msg = f"Failed to retrieve MongoDB URI from secrets: {e}"
+    st.error(error_msg)
+    logging.error(error_msg, exc_info=True)
+except pymongo.errors.ConnectionFailure as e:
+    error_msg = f"Failed to connect to MongoDB Atlas: {e}"
+    st.error(error_msg)
+    logging.error(error_msg, exc_info=True)
+except NameError as e:
+    error_msg = f"NameError occurred: {e}"
+    st.error(error_msg)
+    logging.error(error_msg, exc_info=True)
+except Exception as e:
+    error_msg = f"An unexpected error occurred: {e}"
+    st.error(error_msg)
+    st.write(f"Error type: {type(e).__name__}")
+    logging.error(error_msg, exc_info=True)
     client = MongoClient(st.secrets["mongo"]["uri"])
     db = client.sales_interviewer
     conversations = db.conversations
