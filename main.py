@@ -104,9 +104,6 @@ def end_conversation():
         logging.error(error_msg)
         st.error(error_msg)
 st.title("Sales Interviewer")
-st.write(
-    "This chatbot will interview you and generate content based on your responses."
-)
 
 # Anthropic API key and email credentials (stored as Streamlit secrets)
 ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
@@ -115,36 +112,23 @@ email_password = st.secrets["EMAIL_PASSWORD"]
 email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
-# MongoDB Atlas connection
-st.write("Attempting to connect to MongoDB Atlas")
 try:
     # Check if MongoClient is in the global namespace
     if 'MongoClient' not in globals():
         st.error("MongoClient is not in the global namespace")
         raise NameError("MongoClient is not defined")
-    
-    st.write(f"MongoClient type: {type(MongoClient)}")
 
     # Proceed with the connection attempt
-    st.write("Retrieving MongoDB URI from secrets")
     mongo_uri = st.secrets["mongo"]["uri"]
-    st.write("MongoDB URI retrieved successfully")
     
-    st.write("Initializing MongoClient")
     client = MongoClient(mongo_uri)
-    st.write("MongoClient initialized")
     
-    st.write("Accessing database and collection")
     db = client.sales_interviewer
     conversations = db.conversations
-    st.write("Database and collection accessed successfully")
     
-    st.write("Testing connection")
     client.admin.command('ping')
-    st.write("Connection test successful")
     
     logging.info("Successfully connected to MongoDB Atlas")
-    st.write("Successfully connected to MongoDB Atlas")
 except KeyError as e:
     error_msg = f"Failed to retrieve MongoDB URI from secrets: {e}"
     st.error(error_msg)
