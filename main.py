@@ -53,22 +53,26 @@ os.makedirs(CONVERSATION_DIR, exist_ok=True)
 
 # Function to save new messages to the current conversation file
 def save_conversation(new_messages, conversation_id):
-    filename = os.path.join(CONVERSATION_DIR, f"conversation_{conversation_id}.txt")
+    filename = os.path.join(CONVERSATION_DIR, f"conversation_{conversation_id}.json")
     try:
-        with open(filename, "a") as f:
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            if os.path.getsize(filename) == 0:
-                f.write(f"Conversation started at {timestamp}\n\n")
-                logging.info(f"New conversation file created: {filename}")
-            else:
-                f.write(f"\n--- New messages at {timestamp} ---\n")
-            for message in new_messages:
-                f.write(f"{message['role']}: {message['content']}\n")
+        timestamp = datetime.now().isoformat()
+        if os.path.exists(filename):
+            with open(filename, "r") as f:
+                conversation_data = json.load(f)
+        else:
+            conversation_data = {"conversation_id": conversation_id, "messages": []}
+            logging.info(f"New conversation file created: {filename}")
+        
+        for message in new_messages:
+            conversation_data["messages"].append({
+                "timestamp": timestamp,
+                "role": message["role"],
+                "content": message["content"]
+            })
+        
+        with open(filename, "w") as f:
+            json.dump(conversation_data, f, indent=2)
         logging.info(f"Conversation updated: {filename}")
-    except IOError as e:
-        error_msg = f"IOError occurred while saving the conversation: {str(e)}"
-        logging.error(error_msg)
-        st.error(error_msg)
     except Exception as e:
         error_msg = f"An unexpected error occurred while saving the conversation: {str(e)}"
         logging.error(error_msg)
