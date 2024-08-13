@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
 import tornado.websocket
+import os
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
@@ -16,6 +17,15 @@ def send_email(transcript, story, recipient):
     except Exception as e:
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
+
+# Function to save conversation to a file
+def save_conversation(conversation_history):
+    try:
+        with open("conversation_log.txt", "w") as f:
+            for message in conversation_history:
+                f.write(f"{message['role']}: {message['content']}\n\n")
+    except Exception as e:
+        st.error(f"An error occurred while saving the conversation: {str(e)}")
 
 st.title("Sales Interviewer")
 st.write(
@@ -64,6 +74,7 @@ if prompt:
 
     # Add user message to conversation history
     st.session_state.conversation_history.append({"role": "user", "content": prompt})
+    save_conversation(st.session_state.conversation_history)
 
     # Generate assistant response only if the last message in the conversation history is from the user
 if st.session_state.conversation_history[-1]["role"] == "user":
@@ -136,6 +147,7 @@ Remember to maintain a friendly and professional tone throughout the interview, 
 
     # Add assistant response to conversation history
     st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+    save_conversation(st.session_state.conversation_history)
 
     # Display assistant response in chat message container
     try:
