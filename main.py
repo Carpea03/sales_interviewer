@@ -5,6 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from anthropic import Anthropic
 import tornado.websocket
 import os
+from datetime import datetime
 
 # Function to send email with transcript and generated story
 def send_email(transcript, story, recipient):
@@ -18,12 +19,15 @@ def send_email(transcript, story, recipient):
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
 
-# Function to save conversation to a file
-def save_conversation(conversation_history):
+# Function to append new messages to the conversation log file
+def save_conversation(new_messages):
     try:
-        with open("conversation_log.txt", "w") as f:
-            for message in conversation_history:
-                f.write(f"{message['role']}: {message['content']}\n\n")
+        with open("conversation_log.txt", "a") as f:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"\n--- New messages at {timestamp} ---\n")
+            for message in new_messages:
+                f.write(f"{message['role']}: {message['content']}\n")
+            f.write("\n")
     except Exception as e:
         st.error(f"An error occurred while saving the conversation: {str(e)}")
 
@@ -74,7 +78,7 @@ if prompt:
 
     # Add user message to conversation history
     st.session_state.conversation_history.append({"role": "user", "content": prompt})
-    save_conversation(st.session_state.conversation_history)
+    save_conversation([{"role": "user", "content": prompt}])
 
     # Generate assistant response only if the last message in the conversation history is from the user
 if st.session_state.conversation_history[-1]["role"] == "user":
@@ -147,7 +151,7 @@ Remember to maintain a friendly and professional tone throughout the interview, 
 
     # Add assistant response to conversation history
     st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
-    save_conversation(st.session_state.conversation_history)
+    save_conversation([{"role": "assistant", "content": response_text}])
 
     # Display assistant response in chat message container
     try:
