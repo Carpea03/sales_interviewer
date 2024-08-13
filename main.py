@@ -2,7 +2,7 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from openai import OpenAI
+from anthropic import Anthropic
 import tornado.websocket
 
 # Function to send email with transcript and generated story
@@ -22,20 +22,20 @@ st.write(
     "This chatbot will interview you and generate content based on your responses."
 )
 
-# OpenAI API key and email credentials (stored as Streamlit secrets)
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+# Anthropic API key and email credentials (stored as Streamlit secrets)
+ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
 email_user = st.secrets["EMAIL_USER"]
 email_password = st.secrets["EMAIL_PASSWORD"]
 email_server = st.secrets["EMAIL_SERVER"]
 email_port = st.secrets["EMAIL_PORT"]
 
 # Validate static values immediately after they're defined
-assert isinstance(OPENAI_API_KEY, str), "API key must be a string"
+assert isinstance(ANTHROPIC_API_KEY, str), "API key must be a string"
 assert isinstance(email_user, str), "Email user must be a string"
 # Assertions for email_password, email_server, and email_port could be added here as needed
 
-# Initialize OpenAI client
-client = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize Anthropic client
+client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # Initialize 'conversation_history' in session_state if it doesn't exist
 if "conversation_history" not in st.session_state:
@@ -69,16 +69,16 @@ if prompt:
 if st.session_state.conversation_history[-1]["role"] == "user":
     response_text = ""
     try:
-        response = client.chat_completion(
-            model="gpt-4o",
+        response = client.messages.create(
+            model="claude-3-opus-20240229",
             max_tokens=4096,
             temperature=1,
-            system_message="""
+            system="""
             Your task is to engage in a conversation with a sales professional and interview them about their experience
             """,
-            messages=st.session_state.conversation_history,
+            messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.conversation_history],
         )
-        response_text = response['choices'][0]['message']['content']
+        response_text = response.content[0].text
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
         st.stop()
