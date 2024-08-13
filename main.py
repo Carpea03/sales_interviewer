@@ -7,6 +7,8 @@ import tornado.websocket
 import os
 from datetime import datetime
 import uuid
+import logging
+import shutil
 import re
 
 def strip_xml_tags(text):
@@ -40,25 +42,56 @@ def send_email(transcript, story, recipient):
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
 
+# Set up logging
+logging.basicConfig(filename='chatbot.log', level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Create a directory for conversation files if it doesn't exist
+CONVERSATION_DIR = "conversations"
+os.makedirs(CONVERSATION_DIR, exist_ok=True)
+
 # Function to save new messages to the current conversation file
 def save_conversation(new_messages, conversation_id):
-    filename = f"conversation_{conversation_id}.txt"
+    filename = os.path.join(CONVERSATION_DIR, f"conversation_{conversation_id}.txt")
     try:
         with open(filename, "a") as f:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if os.path.getsize(filename) == 0:
                 f.write(f"Conversation started at {timestamp}\n\n")
+                logging.info(f"New conversation file created: {filename}")
             else:
                 f.write(f"\n--- New messages at {timestamp} ---\n")
             for message in new_messages:
                 f.write(f"{message['role']}: {message['content']}\n")
+        logging.info(f"Conversation updated: {filename}")
+    except IOError as e:
+        error_msg = f"IOError occurred while saving the conversation: {str(e)}"
+        logging.error(error_msg)
+        st.error(error_msg)
     except Exception as e:
-        st.error(f"An error occurred while saving the conversation: {str(e)}")
+        error_msg = f"An unexpected error occurred while saving the conversation: {str(e)}"
+        logging.error(error_msg)
+        st.error(error_msg)
 
+# Function to clean up old conversation files (older than 30 days)
+def cleanup_old_conversations():
+    current_time = datetime.now()
+    for filename in os.listdir(CONVERSATION_DIR):
+        file_path = os.path.join(CONVERSATION_DIR, filename)
+        file_modified_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+        if (current_time - file_modified_time).days > 30:
+            os.remove(file_path)
+            logging.info(f"Removed old conversation file: {file_path}")
+
+# Run cleanup at the start of each session
+cleanup_old_conversations()
+
+        logging.info(f"Conversation ended and email sent for conversation ID: {st.session_state.conversation_id}")
 def end_conversation():
     """Handle the end of the conversation, including sending the email."""
     transcript = "\n".join([f"{message['role']}: {message['content']}" for message in st.session_state.conversation_history])
     
+        logging.error(f"Error ending conversation: {str(e)}")
     email_sender = st.secrets["EMAIL_USER"]
     email_receiver = "alexcarpenter2000@gmail.com"
     subject = "Sales Interview Transcript"
