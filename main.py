@@ -182,14 +182,6 @@ except Exception as e:
     st.error(error_msg)
     st.write(f"Error type: {type(e).__name__}")
     logging.error(error_msg, exc_info=True)
-    client = MongoClient(st.secrets["mongo"]["uri"])
-    db = client.sales_interviewer
-    conversations = db.conversations
-except Exception as e:
-    error_msg = f"Failed to connect to MongoDB Atlas: {e}"
-    st.error(error_msg)
-    st.write(f"Error details: {type(e).__name__}")
-    logging.error(error_msg, exc_info=True)
 
 # Validate static values immediately after they're defined
 assert isinstance(ANTHROPIC_API_KEY, str), "API key must be a string"
