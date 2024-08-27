@@ -273,7 +273,7 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
         response_text = ""
         try:
             response = client.messages.create(
-                model="claude-3-sonnet-20240229",
+                model="claude-3-5-sonnet-20240620",
                 max_tokens=4096,
                 temperature=1,
                 system="""
