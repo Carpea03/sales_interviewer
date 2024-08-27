@@ -41,7 +41,7 @@ def send_email(transcript, story, recipient):
             server.login(sender, password)
             server.send_message(msg)
         return True
-        except Exception as e:
+    except Exception as e:
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
 
