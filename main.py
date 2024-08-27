@@ -14,6 +14,30 @@ from pymongo.errors import ConnectionFailure
 import re
 import pymongo
 
+# Load secrets at the beginning of the script
+try:
+    ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
+    if not ANTHROPIC_API_KEY:
+        raise ValueError("ANTHROPIC_API_KEY is empty")
+    email_user = st.secrets["EMAIL_USER"]
+    email_password = st.secrets["EMAIL_PASSWORD"]
+    email_server = st.secrets["EMAIL_SERVER"]
+    email_port = st.secrets["EMAIL_PORT"]
+except KeyError as e:
+    st.error(f"Missing required secret: {e}")
+    logging.error(f"Missing required secret: {e}")
+    st.stop()
+except ValueError as e:
+    st.error(str(e))
+    logging.error(str(e))
+    st.stop()
+except Exception as e:
+    st.error(f"An error occurred while accessing secrets: {e}")
+    logging.error(f"Error accessing secrets: {e}", exc_info=True)
+    st.stop()
+
+# Anthropic client is now initialized at the beginning of the script
+
 def strip_xml_tags(text):
     # Remove <response> and </response> tags
     text = re.sub(r'</?response>', '', text)
