@@ -1,0 +1,11 @@
+2024-08-27 12:52:56,281 - ERROR - An unexpected error occurred: No secrets files found. Valid paths for a secrets.toml file are: /Users/alex/.streamlit/secrets.toml, /Users/alex/Git/sales_interviewer/.streamlit/secrets.toml
+Traceback (most recent call last):
+  File "/Users/alex/Git/sales_interviewer/main.py", line 139, in <module>
+    mongo_uri = st.secrets["mongo"]["uri"]
+                ~~~~~~~~~~^^^^^^^^^
+  File "/Users/alex/Git/sales_interviewer/path/to/venv/lib/python3.12/site-packages/streamlit/runtime/secrets.py", line 305, in __getitem__
+    value = self._parse(True)[key]
+            ^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Git/sales_interviewer/path/to/venv/lib/python3.12/site-packages/streamlit/runtime/secrets.py", line 214, in _parse
+    raise FileNotFoundError(err_msg)
+FileNotFoundError: No secrets files found. Valid paths for a secrets.toml file are: /Users/alex/.streamlit/secrets.toml, /Users/alex/Git/sales_interviewer/.streamlit/secrets.toml
