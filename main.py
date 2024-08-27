@@ -28,7 +28,7 @@ def send_email(transcript, story, recipient):
     subject = "Sales Interview Transcript"
     content = f"Interview Transcript:\n\n{transcript}"
 
-    try::
+    try:
         msg = MIMEMultipart()
         msg['From'] = sender
         msg['To'] = recipient
