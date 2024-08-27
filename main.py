@@ -2,7 +2,7 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from anthropic import Anthropic
+from anthropic import Anthropic, CLAUDE_3_SONNET_20240229
 import tornado.websocket
 import os
 from datetime import datetime
@@ -274,7 +274,7 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
             response_text = ""
             try:
                 response = client.messages.create(
-                    model="claude-3-5-sonnet-20240620",
+                    model=CLAUDE_3_SONNET_20240229,
                     max_tokens=4096,
                     temperature=1,
                     system="""
@@ -327,7 +327,7 @@ Remember to maintain a friendly and professional tone throughout the interview, 
                 """,
                     messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.conversation_history],
                 )
-                response_text = response.content[0].text
+                response_text = response.content
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
                 st.stop()
