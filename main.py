@@ -22,13 +22,13 @@ def strip_xml_tags(text):
     return text.strip()
 
 # Function to send email with transcript and generated story
-def send_email(transcript, story, recipient):
+def send_email(transcript, story, recipient)::
     sender = email_user
     password = email_password
     subject = "Sales Interview Transcript"
     content = f"Interview Transcript:\n\n{transcript}"
 
-    try:
+    try::
         msg = MIMEMultipart()
         msg['From'] = sender
         msg['To'] = recipient
@@ -41,9 +41,10 @@ def send_email(transcript, story, recipient):
             server.login(sender, password)
             server.send_message(msg)
         return True
-    except Exception as e:
+    except Exception as e::
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
+
 
 # Set up logging
 logging.basicConfig(filename='chatbot.log', level=logging.INFO,
