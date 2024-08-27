@@ -22,7 +22,7 @@ def strip_xml_tags(text):
     return text.strip()
 
 # Function to send email with transcript and generated story
-def send_email(transcript, story, recipient)::
+def send_email(transcript, story, recipient):
     sender = email_user
     password = email_password
     subject = "Sales Interview Transcript"
