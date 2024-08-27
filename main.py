@@ -121,13 +121,12 @@ if st.button("Start Interview"):
 
 # Only show the chat interface if the interview has started
 if 'interview_started' in st.session_state and st.session_state.interview_started:
-
-# Anthropic API key and email credentials (stored as Streamlit secrets)
-ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
-email_user = st.secrets["EMAIL_USER"]
-email_password = st.secrets["EMAIL_PASSWORD"]
-email_server = st.secrets["EMAIL_SERVER"]
-email_port = st.secrets["EMAIL_PORT"]
+    # Anthropic API key and email credentials (stored as Streamlit secrets)
+    ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
+    email_user = st.secrets["EMAIL_USER"]
+    email_password = st.secrets["EMAIL_PASSWORD"]
+    email_server = st.secrets["EMAIL_SERVER"]
+    email_port = st.secrets["EMAIL_PORT"]
 
 try:
     # Check if MongoClient is in the global namespace
