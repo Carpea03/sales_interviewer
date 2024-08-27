@@ -126,7 +126,7 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
         try:
             ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
             if not ANTHROPIC_API_KEY:
-            raise ValueError("ANTHROPIC_API_KEY is empty")
+                raise ValueError("ANTHROPIC_API_KEY is empty")
 except KeyError:
     st.error("ANTHROPIC_API_KEY is not set in Streamlit secrets.")
     logging.error("ANTHROPIC_API_KEY is not set in Streamlit secrets.")
