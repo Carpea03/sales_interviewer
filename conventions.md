@@ -17,11 +17,12 @@ This document outlines the conventions used in the Sales Interviewer Chatbot pro
 
 ## AI Model
 - Use Anthropic's Claude 3.5 model for natural language processing
-- Keep the model version up to date (currently using 'claude-3-opus-20240229')
+- Keep the model version up to date (currently using 'claude-3-5-sonnet-20240620')
 
 ## API Usage
 - Use the Anthropic Python client library for API calls
-- Store API keys securely in Streamlit secrets
+- Store API keys and other sensitive information securely in Streamlit secrets
+- Use the PyMongo client for MongoDB Atlas operations
 
 ## Testing
 - Write unit tests using pytest
@@ -55,5 +56,6 @@ This document outlines the conventions used in the Sales Interviewer Chatbot pro
 - Include timestamps, user inputs, and chatbot responses in the conversation history
 - Implement a method to display the conversation history to the user if needed
 - Ensure proper error handling and retry mechanisms for database operations
+- Implement conversation ending functionality with email transcript sending
 
 These conventions are subject to change as the project evolves. Always refer to the latest version of this document in the repository.
