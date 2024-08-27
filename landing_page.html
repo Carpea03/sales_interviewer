@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Interviewer Chatbot - Welcome</title>
     <style>
+        #landing-content, #chat-window {
+            transition: display 0.3s ease-in-out;
+        }
+        #chat-window {
+            height: 100vh;
+            width: 100%;
+        }
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -37,6 +44,7 @@
     </style>
 </head>
 <body>
+    <div id="landing-content">
     <h1>Welcome to the Sales Interviewer Chatbot</h1>
     
     <p>Thank you for participating in our sales professional interview process. This AI-powered chatbot is designed to gather insights about your experiences and strategies in sales. Your input will be valuable in helping other sales professionals improve their skills.</p>
@@ -78,6 +86,19 @@
 
     <p>Ready to start? Click the button below to begin your interview with our AI Sales Interviewer!</p>
 
-    <a href="#" class="cta-button">Start Interview</a>
+    <a href="#" class="cta-button" id="start-interview">Start Interview</a>
+    </div>
+    <div id="chat-window" style="display: none;">
+        <!-- Chat window content will be inserted here by Streamlit -->
+    </div>
+    
+    <script>
+        document.getElementById('start-interview').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('landing-content').style.display = 'none';
+            document.getElementById('chat-window').style.display = 'block';
+            // You may need to add code here to initialize or focus on the chat window
+        });
+    </script>
 </body>
 </html>
