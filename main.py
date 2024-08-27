@@ -41,7 +41,7 @@ def send_email(transcript, story, recipient):
             server.login(sender, password)
             server.send_message(msg)
         return True
-    except Exception as e:
+        except Exception as e:
         st.error(f"An error occurred while sending the email: {str(e)}")
         return False
 
@@ -131,17 +131,17 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
         email_password = st.secrets["EMAIL_PASSWORD"]
         email_server = st.secrets["EMAIL_SERVER"]
         email_port = st.secrets["EMAIL_PORT"]
-except KeyError as e:
-    st.error(f"Missing required secret: {e}")
-    logging.error(f"Missing required secret: {e}")
-    st.stop()
-except ValueError as e:
-    st.error(str(e))
-    logging.error(str(e))
+    except KeyError as e:
+        st.error(f"Missing required secret: {e}")
+        logging.error(f"Missing required secret: {e}")
+        st.stop()
+    except ValueError as e:
+        st.error(str(e))
+        logging.error(str(e))
     st.stop()
 except Exception as e:
-    st.error(f"An error occurred while accessing secrets: {e}")
-    logging.error(f"Error accessing secrets: {e}", exc_info=True)
+        st.error(f"An error occurred while accessing secrets: {e}")
+        logging.error(f"Error accessing secrets: {e}", exc_info=True)
     st.stop()
 
 try:
