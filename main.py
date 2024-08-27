@@ -125,7 +125,7 @@ if st.button("Start Interview"):
 if 'interview_started' in st.session_state and st.session_state.interview_started:
     # Anthropic API key and email credentials (stored as Streamlit secrets)
     try:
-            ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
+        ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
         if not ANTHROPIC_API_KEY:
             raise ValueError("ANTHROPIC_API_KEY is empty")
         email_user = st.secrets["EMAIL_USER"]
@@ -139,11 +139,11 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
     except ValueError as e:
         st.error(str(e))
         logging.error(str(e))
-    st.stop()
-except Exception as e:
+        st.stop()
+    except Exception as e:
         st.error(f"An error occurred while accessing secrets: {e}")
         logging.error(f"Error accessing secrets: {e}", exc_info=True)
-    st.stop()
+        st.stop()
 
 try:
     # Check if MongoClient is in the global namespace
@@ -303,7 +303,7 @@ Remember to maintain a friendly and professional tone throughout the interview, 
             """,
             messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.conversation_history],
         )
-                    response_text = response.content[0].text
+            response_text = response.content[0].text
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
             st.stop()
