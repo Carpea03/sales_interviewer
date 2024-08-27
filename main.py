@@ -123,8 +123,8 @@ if st.button("Start Interview"):
 # Only show the chat interface if the interview has started
 if 'interview_started' in st.session_state and st.session_state.interview_started:
     # Anthropic API key and email credentials (stored as Streamlit secrets)
-        try:
-    ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
+    try:
+        ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
     if not ANTHROPIC_API_KEY:
         raise ValueError("ANTHROPIC_API_KEY is empty")
     email_user = st.secrets["EMAIL_USER"]
