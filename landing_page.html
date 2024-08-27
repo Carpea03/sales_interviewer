@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sales Interviewer Chatbot - Welcome</title>
     <style>
         .disclaimer {
@@ -12,6 +12,11 @@
             padding: 10px;
             font-style: italic;
         }
+        #landing-content {
+            max-height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
         #landing-content, #chat-window {
             transition: display 0.3s ease-in-out;
         }
@@ -20,6 +25,8 @@
             width: 100%;
         }
         body {
+            height: 100vh;
+            overflow-y: auto;
             font-family: Arial, sans-serif;
             line-height: 1.6;
             color: #333;
@@ -52,7 +59,6 @@
 </head>
 <body>
     <div id="landing-content">
-    <h1>Welcome to the Sales Interviewer Chatbot</h1>
     
     <p>Thank you for participating in our sales professional interview process. This AI-powered chatbot is designed to gather insights about your experiences and strategies in sales. Your input will be valuable in helping other sales professionals improve their skills.</p>
 
