@@ -12,6 +12,7 @@ import json
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 import re
+import pymongo
 
 def strip_xml_tags(text):
     # Remove <response> and </response> tags
