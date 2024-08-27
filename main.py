@@ -127,25 +127,25 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
             ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
             if not ANTHROPIC_API_KEY:
                 raise ValueError("ANTHROPIC_API_KEY is empty")
-except KeyError:
-    st.error("ANTHROPIC_API_KEY is not set in Streamlit secrets.")
-    logging.error("ANTHROPIC_API_KEY is not set in Streamlit secrets.")
-    st.stop()
-except ValueError as e:
-    st.error(str(e))
-    logging.error(str(e))
-    st.stop()
-except Exception as e:
-    st.error(f"An error occurred while accessing ANTHROPIC_API_KEY: {e}")
-    logging.error(f"Error accessing ANTHROPIC_API_KEY: {e}", exc_info=True)
-    st.stop()
-        email_user = st.secrets["EMAIL_USER"]
-        email_password = st.secrets["EMAIL_PASSWORD"]
-        email_server = st.secrets["EMAIL_SERVER"]
-        email_port = st.secrets["EMAIL_PORT"]
-    except KeyError as e:
-        st.error(f"Missing required secret: {e}")
-        st.stop()
+                    except KeyError:
+                        st.error("ANTHROPIC_API_KEY is not set in Streamlit secrets.")
+                        logging.error("ANTHROPIC_API_KEY is not set in Streamlit secrets.")
+                        st.stop()
+                    except ValueError as e:
+                        st.error(str(e))
+                        logging.error(str(e))
+                        st.stop()
+                    except Exception as e:
+                        st.error(f"An error occurred while accessing ANTHROPIC_API_KEY: {e}")
+                        logging.error(f"Error accessing ANTHROPIC_API_KEY: {e}", exc_info=True)
+                        st.stop()
+                            email_user = st.secrets["EMAIL_USER"]
+                            email_password = st.secrets["EMAIL_PASSWORD"]
+                            email_server = st.secrets["EMAIL_SERVER"]
+                            email_port = st.secrets["EMAIL_PORT"]
+                        except KeyError as e:
+                            st.error(f"Missing required secret: {e}")
+                            st.stop()
 
 try:
     # Check if MongoClient is in the global namespace
