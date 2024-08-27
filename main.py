@@ -103,7 +103,24 @@ def end_conversation():
         error_msg = f"An error occurred while ending the conversation: {str(e)}"
         logging.error(error_msg)
         st.error(error_msg)
-st.title("Sales Interviewer")
+import streamlit.components.v1 as components
+
+# Function to read HTML content
+def read_html_file(file_path):
+    with open(file_path, 'r') as file:
+        return file.read()
+
+# Display the landing page
+st.title("Sales Interviewer Chatbot")
+landing_page_html = read_html_file('landing_page.html')
+components.html(landing_page_html, height=600)
+
+# Add a button to start the interview
+if st.button("Start Interview"):
+    st.session_state.interview_started = True
+
+# Only show the chat interface if the interview has started
+if 'interview_started' in st.session_state and st.session_state.interview_started:
 
 # Anthropic API key and email credentials (stored as Streamlit secrets)
 ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
@@ -184,13 +201,16 @@ if "conversation_history" not in st.session_state:
     ]
 
 # Display chat messages from history on app rerun
-for message in st.session_state.conversation_history[1:]:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+if 'interview_started' in st.session_state and st.session_state.interview_started:
+    for message in st.session_state.conversation_history[1:]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
 # Add "End Conversation" button
-if st.button("End Conversation"):
-    end_conversation()
+if 'interview_started' in st.session_state and st.session_state.interview_started:
+    if st.button("End Conversation"):
+        end_conversation()
+        st.session_state.interview_started = False
 
 # Initialize the conversation history if it doesn't exist
 if "conversation_history" not in st.session_state:
@@ -203,9 +223,10 @@ else:
     disabled = False
 
 # Accept user input
-prompt = st.chat_input(
-    "What would you like to share?",
-    disabled=disabled
+if 'interview_started' in st.session_state and st.session_state.interview_started:
+    prompt = st.chat_input(
+        "What would you like to share?",
+        disabled=disabled
 )
 if prompt:
     # Display user message in chat message container
