@@ -245,14 +245,14 @@ if prompt:
     save_conversation([{"role": "user", "content": prompt}], st.session_state.conversation_id)
 
     # Generate assistant response only if the last message in the conversation history is from the user
-if st.session_state.conversation_history and st.session_state.conversation_history[-1]["role"] == "user":
-    response_text = ""
-    try:
-        response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=4096,
-            temperature=1,
-            system="""
+    if st.session_state.conversation_history and st.session_state.conversation_history[-1]["role"] == "user":
+        response_text = ""
+        try:
+            response = client.messages.create(
+                model="claude-3-5-sonnet-20240620",
+                max_tokens=4096,
+                temperature=1,
+                system="""
             You are an AI assistant tasked with conducting an interview with a sales professional to extract useful and actionable insights for other salespeople. Your goal is to engage in a natural conversation while gathering specific information about their experiences and practices.
 
 Here is the conversation history so far:
@@ -302,21 +302,21 @@ Remember to maintain a friendly and professional tone throughout the interview, 
             """,
             messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.conversation_history],
         )
-        response_text = response.content[0].text
-    except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
-        st.stop()
+                    response_text = response.content[0].text
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+            st.stop()
 
-    # Add assistant response to conversation history
-    st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
-    save_conversation([{"role": "assistant", "content": response_text}], st.session_state.conversation_id)
+        # Add assistant response to conversation history
+        st.session_state.conversation_history.append({"role": "assistant", "content": response_text})
+        save_conversation([{"role": "assistant", "content": response_text}], st.session_state.conversation_id)
 
-    # Strip XML tags from the response
-    cleaned_response = strip_xml_tags(response_text)
+        # Strip XML tags from the response
+        cleaned_response = strip_xml_tags(response_text)
 
-    # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        st.markdown(cleaned_response)
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(cleaned_response)
 
-    # Update the conversation history with the cleaned response
-    st.session_state.conversation_history[-1]["content"] = cleaned_response
+        # Update the conversation history with the cleaned response
+        st.session_state.conversation_history[-1]["content"] = cleaned_response
