@@ -138,17 +138,81 @@ def read_html_file(file_path):
     with open(file_path, 'r') as file:
         return file.read()
 
-# Display the landing page
-st.title("Sales Interviewer Chatbot")
-landing_page_html = read_html_file('landing_page.html')
-components.html(landing_page_html, height=600)
+# Set up the main layout
+st.set_page_config(layout="wide")
 
-# Add a button to start the interview
-if st.button("Start Interview"):
-    st.session_state.interview_started = True
+# Create a sidebar
+with st.sidebar:
+    st.title("Sales Interviewer Chatbot")
+    st.write("Welcome to the Sales Interviewer Chatbot. This AI-powered tool will conduct an interview to gather insights about your sales experiences.")
 
-# Only show the chat interface if the interview has started
-if 'interview_started' in st.session_state and st.session_state.interview_started:
+# Main content area
+if 'interview_started' not in st.session_state:
+    st.session_state.interview_started = False
+
+if not st.session_state.interview_started:
+    # Display the landing page
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        landing_page_html = read_html_file('landing_page.html')
+        components.html(landing_page_html, height=400)
+    with col2:
+        st.header("Ready to start?")
+        if st.button("Start Interview", key="start_interview", use_container_width=True):
+            st.session_state.interview_started = True
+            st.experimental_rerun()
+else:
+    # Chat interface
+    st.header("Sales Interview in Progress")
+    
+    # Create a container for the chat history with fixed height and scrolling
+    chat_container = st.container()
+    chat_container.markdown("""
+    <style>
+    .chat-container {
+        height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .user-message {
+        background-color: #e6f3ff;
+        padding: 10px;
+        border-radius: 15px;
+        margin: 5px 0;
+    }
+    .assistant-message {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 15px;
+        margin: 5px 0;
+    }
+    </style>
+    <div class="chat-container" id="chat-container"></div>
+    """, unsafe_allow_html=True)
+    
+    # Display chat messages
+    for message in st.session_state.conversation_history[1:]:
+        chat_container.markdown(f"<div class='{message['role']}-message'>{message['content']}</div>", unsafe_allow_html=True)
+    
+    # Automatically scroll to the bottom of the chat container
+    st.markdown("""
+    <script>
+        var chatContainer = document.getElementById('chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # Chat input and end conversation button
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        prompt = st.text_input("Your response:", key="chat_input")
+    with col2:
+        if st.button("End Conversation", key="end_conversation"):
+            end_conversation()
+            st.session_state.interview_started = False
+            st.experimental_rerun()
     # Anthropic API key and email credentials (stored as Streamlit secrets)
     try:
         ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
@@ -240,11 +304,7 @@ if 'interview_started' in st.session_state and st.session_state.interview_starte
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-# Add "End Conversation" button
-if 'interview_started' in st.session_state and st.session_state.interview_started:
-    if st.button("End Conversation"):
-        end_conversation()
-        st.session_state.interview_started = False
+# "End Conversation" button is now handled in the main layout
 
 # Initialize the conversation history if it doesn't exist
 if "conversation_history" not in st.session_state:
@@ -256,13 +316,8 @@ if st.session_state.conversation_history:
 else:
     disabled = False
 
-# Accept user input and process it
-if 'interview_started' in st.session_state and st.session_state.interview_started:
-    prompt = st.chat_input(
-        "What would you like to share?",
-        disabled=disabled
-    )
-    if prompt:
+# Process user input
+if st.session_state.interview_started and prompt:
         # Display user message in chat message container
         with st.chat_message("user"):
             st.markdown(prompt)
