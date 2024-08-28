@@ -155,7 +155,8 @@ else:
             st.write(message["content"])
 
     # User input
-    if prompt := st.chat_input("Your response:"):
+    prompt = st.chat_input("Your response:")
+    if prompt:
         # Display user message
         with st.chat_message("user"):
             st.write(prompt)
@@ -189,7 +190,7 @@ else:
                     """,
                     messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.conversation_history],
                 )
-                response_text = response.content[0].text if isinstance(response.content, list) else response.content
+                response_text = response.content
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
                 st.stop()
