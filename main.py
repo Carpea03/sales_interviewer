@@ -163,18 +163,17 @@ if not st.session_state.interview_started:
             st.experimental_rerun()
 else:
     # Chat interface
-    st.header("Sales Interview in Progress")
-    
-    # Create a container for the chat history with fixed height and scrolling
-    chat_container = st.container()
-    chat_container.markdown("""
+    st.markdown("""
     <style>
     .chat-container {
-        height: 400px;
+        height: 70vh;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column-reverse;
         border: 1px solid #ddd;
         padding: 10px;
         border-radius: 5px;
+        margin-bottom: 80px;
     }
     .user-message {
         background-color: #e6f3ff;
@@ -188,13 +187,35 @@ else:
         border-radius: 15px;
         margin: 5px 0;
     }
+    .input-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        background-color: white;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
     </style>
-    <div class="chat-container" id="chat-container"></div>
+    <div class="chat-container" id="chat-container">
     """, unsafe_allow_html=True)
     
     # Display chat messages
-    for message in st.session_state.conversation_history[1:]:
-        chat_container.markdown(f"<div class='{message['role']}-message'>{message['content']}</div>", unsafe_allow_html=True)
+    for message in reversed(st.session_state.conversation_history[1:]):
+        st.markdown(f"<div class='{message['role']}-message'>{message['content']}</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Input area and end conversation button
+    st.markdown("""<div class="input-container">""", unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        prompt = st.text_input("Your response:", key="chat_input")
+    with col2:
+        if st.button("End Conversation", key="end_conversation"):
+            end_conversation()
+            st.session_state.interview_started = False
+            st.experimental_rerun()
+    st.markdown("""</div>""", unsafe_allow_html=True)
     
     # Automatically scroll to the bottom of the chat container
     st.markdown("""
@@ -204,15 +225,7 @@ else:
     </script>
     """, unsafe_allow_html=True)
     
-    # Chat input and end conversation button
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        prompt = st.text_input("Your response:", key="chat_input")
-    with col2:
-        if st.button("End Conversation", key="end_conversation"):
-            end_conversation()
-            st.session_state.interview_started = False
-            st.experimental_rerun()
+    # Chat input and end conversation button are now handled in the markdown above
     # Anthropic API key and email credentials (stored as Streamlit secrets)
     try:
         ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
