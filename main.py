@@ -328,7 +328,7 @@ Remember to maintain a friendly and professional tone throughout the interview, 
                 """,
                 messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.conversation_history],
             )
-            response_text = response.content
+            response_text = response.content[0].text if isinstance(response.content, list) else response.content
         except Exception as e:
             if "invalid_api_key" in str(e).lower():
                 st.error("Invalid API key. Please check your Anthropic API key in the Streamlit secrets.")
