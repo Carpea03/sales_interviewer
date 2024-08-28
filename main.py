@@ -39,6 +39,8 @@ except Exception as e:
 # Anthropic client is now initialized at the beginning of the script
 
 def strip_xml_tags(text):
+    if isinstance(text, list):
+        text = ' '.join(text)  # Join list elements into a single string
     # Remove <response> and </response> tags
     text = re.sub(r'</?response>', '', text)
     # Remove <insights_summary> and </insights_summary> tags
