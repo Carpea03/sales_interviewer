@@ -105,6 +105,19 @@ def end_conversation():
         st.error(error_msg)
 st.title("Sales Interviewer")
 
+# Adding a sidebar with interview information
+st.sidebar.title("Interview Information")
+
+st.sidebar.subheader("About the Interview")
+st.sidebar.write("This interview aims to gather insights and actionable advice from sales professionals like you. Your experiences will help others in the sales industry.")
+
+st.sidebar.subheader("Estimated Time")
+st.sidebar.write("This interview typically takes **10-20 minutes** to complete. However, the duration may vary depending on the depth of your responses.")
+
+st.sidebar.subheader("Your Participation")
+st.sidebar.write("Please feel free to share as much or as little as you're comfortable with. You can end the interview at any time if you wish to do so.")
+
+
 # Anthropic API key and email credentials (stored as Streamlit secrets)
 ANTHROPIC_API_KEY = st.secrets["ANTHROPIC_API_KEY"]
 email_user = st.secrets["EMAIL_USER"]
