@@ -139,12 +139,18 @@ with st.sidebar:
 if 'interview_started' not in st.session_state:
     st.session_state.interview_started = False
 
+if 'conversation_history' not in st.session_state:
+    st.session_state.conversation_history = []
+
+if 'conversation_id' not in st.session_state:
+    st.session_state.conversation_id = str(uuid.uuid4())
+
 if not st.session_state.interview_started:
     st.header("Ready to start your sales interview?")
     if st.button("Start Interview", use_container_width=True):
         st.session_state.interview_started = True
-        st.session_state.conversation_id = str(uuid.uuid4())
         st.session_state.conversation_history = [
+            {"role": "user", "content": "Hi"},
             {"role": "assistant", "content": "Hello! It's great to meet you. I'm an AI assistant here to conduct an interview about your experiences as a sales professional. I'm looking forward to learning from you and gathering insights that could be helpful for other salespeople. To start off, could you tell me a bit about the organization or organizations you currently sell for?"}
         ]
         st.rerun()
@@ -155,8 +161,7 @@ else:
             st.write(message["content"])
 
     # User input
-    prompt = st.chat_input("Your response:")
-    if prompt:
+    if prompt := st.chat_input("Your response:"):
         # Display user message
         with st.chat_message("user"):
             st.write(prompt)
