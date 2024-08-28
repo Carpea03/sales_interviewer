@@ -1,0 +1,84 @@
+1. Modify the landing page layout:
+   a. Remove the height constraint from the introductory information container.
+   b. Update the HTML content in the `landing_page.html` file:
+      - Remove any fixed height CSS properties.
+      - Adjust the layout to use flexbox or grid for better responsiveness.
+   c. In the main script, update the `components.html()` call to remove any height parameter.
+
+2. Restructure the chat interface:
+   a. Remove the large empty container at the top of the chat interface.
+   b. Move the chat history display to the top of the page.
+   c. Create a scrollable chat container that takes up most of the screen:
+      ```python
+      st.markdown("""
+      <style>
+      .chat-container {
+          height: 70vh;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column-reverse;
+      }
+      </style>
+      """, unsafe_allow_html=True)
+      
+      chat_container = st.container()
+      with chat_container:
+          st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+          for message in reversed(st.session_state.conversation_history[1:]):
+              st.markdown(f"<div class='{message['role']}-message'>{message['content']}</div>", unsafe_allow_html=True)
+          st.markdown('</div>', unsafe_allow_html=True)
+      ```
+
+3. Fix the input area positioning:
+   a. Create a fixed position input area at the bottom of the screen:
+      ```python
+      st.markdown("""
+      <style>
+      .input-container {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 10px;
+          background-color: white;
+          box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      }
+      </style>
+      """, unsafe_allow_html=True)
+      
+      with st.container():
+          st.markdown('<div class="input-container">', unsafe_allow_html=True)
+          col1, col2 = st.columns([3, 1])
+          with col1:
+              prompt = st.text_input("Your response:", key="chat_input")
+          with col2:
+              if st.button("End Conversation", key="end_conversation"):
+                  end_conversation()
+                  st.session_state.interview_started = False
+                  st.experimental_rerun()
+          st.markdown('</div>', unsafe_allow_html=True)
+      ```
+
+4. Enhance the visual design:
+   a. Create a consistent color scheme and apply it throughout the application.
+   b. Use Streamlit's theming capabilities to set a custom theme:
+      ```python
+      st.set_page_config(
+          page_title="Sales Interviewer Chatbot",
+          page_icon="💬",
+          layout="wide",
+          initial_sidebar_state="expanded",
+      )
+      
+      st.markdown("""
+      <style>
+      :root {
+          --primary-color: #3498db;
+          --secondary-color: #2ecc71;
+          --background-color: #f0f0f0;
+          --text-color: #333333;
+      }
+      /* Add more custom CSS here */
+      </style>
+      """, unsafe_allow_html=True)
+      ```
