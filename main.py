@@ -138,8 +138,37 @@ def read_html_file(file_path):
     with open(file_path, 'r') as file:
         return file.read()
 
-# Set up the main layout
-st.set_page_config(layout="wide")
+# Set up the main layout and theme
+st.set_page_config(
+    page_title="Sales Interviewer Chatbot",
+    page_icon="💬",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# Apply custom theme
+st.markdown("""
+<style>
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --background-color: #f0f0f0;
+    --text-color: #333333;
+}
+body {
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+.stButton>button {
+    color: white;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+.stTextInput>div>div>input {
+    border-color: var(--primary-color);
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Create a sidebar
 with st.sidebar:
@@ -176,13 +205,15 @@ else:
         margin-bottom: 80px;
     }
     .user-message {
-        background-color: #e6f3ff;
+        background-color: var(--primary-color);
+        color: white;
         padding: 10px;
         border-radius: 15px;
         margin: 5px 0;
     }
     .assistant-message {
-        background-color: #f0f0f0;
+        background-color: var(--secondary-color);
+        color: white;
         padding: 10px;
         border-radius: 15px;
         margin: 5px 0;
