@@ -147,7 +147,7 @@ if not st.session_state.interview_started:
         st.session_state.conversation_history = [
             {"role": "assistant", "content": "Hello! It's great to meet you. I'm an AI assistant here to conduct an interview about your experiences as a sales professional. I'm looking forward to learning from you and gathering insights that could be helpful for other salespeople. To start off, could you tell me a bit about the organization or organizations you currently sell for?"}
         ]
-        st.experimental_rerun()
+        st.rerun()
 else:
     # Chat interface
     for message in st.session_state.conversation_history:
@@ -207,4 +207,4 @@ else:
     # End conversation button
     if st.button("End Conversation"):
         end_conversation()
-        st.experimental_rerun()
+        st.rerun()
